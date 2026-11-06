@@ -1,0 +1,15 @@
+{
+  "name": "attio-admin-mcp",
+  "version": "4.5.0",
+  "description": "MCP server and reference implementation for Attio's internal admin API: workflows, views, select options, record layouts",
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node test-protocol.js",
+    "test:full": "node test-full.js"
+  },
+  "private": true
+}

@@ -1,0 +1,18 @@
+# Credentials — never commit these.
+# The session cookie belongs in ~/.attio-session, outside this repo.
+.attio-session
+*.session
+*.cookie
+.env
+.env.*
+
+# Captures may contain live session cookies
+*.flows
+*.har
+
+node_modules/
+.DS_Store
+
+# mitmproxy capture output (workspace data, not for the repo)
+tools/capture/
+tools/mitm.log

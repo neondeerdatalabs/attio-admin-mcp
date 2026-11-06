@@ -1,0 +1,388 @@
+{
+  "_source": "Harvested from LEGACY workflow snapshots, where Attio serves each block schema directly. Slugs here are CATALOG slugs (system_block_type minus its prefix), not the provider slugs that modern configs use.",
+  "_warning": "The legacy and modern engines do not always name the same field the same way. Legacy on-record-updated exposes \"record\"; modern exposes \"entity_instance\". Treat this as authoritative for LEGACY workflows only, and as a strong hint for modern ones.",
+  "blocks": {
+    "on-record-action": {
+      "outputs": {
+        "record": {
+          "title": "Record",
+          "data_types": null
+        },
+        "actor": {
+          "title": "Triggered by",
+          "data_types": null
+        },
+        "triggered_at": {
+          "title": "Triggered at",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "entity_definition_id": {
+          "title": "Object"
+        }
+      },
+      "seen": 2
+    },
+    "create-entry": {
+      "outputs": {
+        "entry": {
+          "title": "Created entry",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "entity_definition_id": {
+          "title": "List"
+        },
+        "entity_reference": {
+          "title": "Record"
+        }
+      },
+      "seen": 6
+    },
+    "on-attribute-updated": {
+      "outputs": {
+        "record": {
+          "title": "Record",
+          "data_types": null
+        },
+        "previous_value": {
+          "title": "Previous value",
+          "data_types": null
+        },
+        "new_value": {
+          "title": "New value",
+          "data_types": null
+        },
+        "actor": {
+          "title": "Updated by",
+          "data_types": null
+        },
+        "updated_at": {
+          "title": "Updated at",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "entity_definition_id": {
+          "title": "Object or List"
+        },
+        "attribute_definition_id": {
+          "title": "Attribute"
+        }
+      },
+      "seen": 7
+    },
+    "assert-record": {
+      "outputs": {
+        "record": {
+          "title": "Record",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "entity_definition_id": {
+          "title": "Object"
+        },
+        "matching_attribute_definition_id": {
+          "title": "Matching attribute"
+        },
+        "overwrite_multi_value_attributes": {
+          "title": "Overwrite multi-select values"
+        }
+      },
+      "seen": 1
+    },
+    "find-records": {
+      "outputs": {
+        "records": {
+          "title": "Matching Deals",
+          "data_types": null
+        },
+        "match_count": {
+          "title": "Number of matches",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "entity_definition_id": {
+          "title": "Object"
+        },
+        "condition": {
+          "title": "Condition"
+        },
+        "limit": {
+          "title": "Limit"
+        }
+      },
+      "seen": 3
+    },
+    "on-interval-activated": {
+      "outputs": {
+        "triggered_at": {
+          "title": "Triggered At",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "interval-mode": {
+          "title": "Frequency"
+        },
+        "days-of-week": {
+          "title": "Repeat on"
+        },
+        "days-of-month": {
+          "title": "Repeat on"
+        },
+        "cron-expression": {
+          "title": "Cron expression"
+        },
+        "time-of-day": {
+          "title": "Time"
+        },
+        "timezone": {
+          "title": "Timezone"
+        }
+      },
+      "seen": 2
+    },
+    "on-entry-updated": {
+      "outputs": {
+        "entry": {
+          "title": "Updated entry",
+          "data_types": null
+        },
+        "actor": {
+          "title": "Updated by",
+          "data_types": null
+        },
+        "updated_at": {
+          "title": "Updated at",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "entity_definition_id": {
+          "title": "List"
+        },
+        "attribute_definition_id": {
+          "title": "Attribute"
+        }
+      },
+      "seen": 1
+    },
+    "outbound-webhook": {
+      "outputs": {
+        "response_status": {
+          "title": "HTTP status code",
+          "data_types": null
+        },
+        "response_body": {
+          "title": "HTTP response body",
+          "data_types": null
+        },
+        "response_ok": {
+          "title": "Whether the response was successful (200-299 response)",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "method": {
+          "title": "Method"
+        },
+        "url": {
+          "title": "URL"
+        },
+        "headers": {
+          "title": "Headers"
+        },
+        "content_type": {
+          "title": "Content-Type header"
+        },
+        "body": {
+          "title": "Body"
+        }
+      },
+      "seen": 4
+    },
+    "enroll-in-sequence": {
+      "outputs": {
+        "enrolled_successfully": {
+          "title": "Enrolled successfully",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "sequence_id": {
+          "title": "Sequence"
+        },
+        "recipient": {
+          "title": "Recipient"
+        },
+        "sender": {
+          "title": "Sender"
+        }
+      },
+      "seen": 1
+    },
+    "shift-timestamp": {
+      "outputs": {
+        "value": {
+          "title": "Adjusted timestamp",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "timestamp": {
+          "title": "Timestamp"
+        },
+        "offset": {
+          "title": "Offset"
+        },
+        "unit": {
+          "title": "Unit"
+        }
+      },
+      "seen": 1
+    },
+    "create-task": {
+      "outputs": {
+        "task": {
+          "title": "Created task",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "content": {
+          "title": "Task"
+        },
+        "due_at": {
+          "title": "Due"
+        },
+        "references": {
+          "title": "Linked records"
+        },
+        "assignees": {
+          "title": "Assignees"
+        }
+      },
+      "seen": 1
+    },
+    "create-record": {
+      "outputs": {
+        "record": {
+          "title": "Created record",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "entity_definition_id": {
+          "title": "Object"
+        }
+      },
+      "seen": 5
+    },
+    "on-record-updated": {
+      "outputs": {
+        "record": {
+          "title": "Updated record",
+          "data_types": null
+        },
+        "previous_value": {
+          "title": "Previous value",
+          "data_types": null
+        },
+        "new_value": {
+          "title": "New value",
+          "data_types": null
+        },
+        "actor": {
+          "title": "Updated by",
+          "data_types": null
+        },
+        "updated_at": {
+          "title": "Updated at",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "entity_definition_id": {
+          "title": "Object"
+        },
+        "attribute_definition_id": {
+          "title": "Attribute"
+        }
+      },
+      "seen": 3
+    },
+    "branch": {
+      "outputs": {
+        "matched": {
+          "title": "Matched",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "condition": {
+          "title": "Condition"
+        }
+      },
+      "seen": 3
+    },
+    "on-task-created": {
+      "outputs": {
+        "task": {
+          "title": "Created task",
+          "data_types": null
+        },
+        "actor": {
+          "title": "Added by",
+          "data_types": null
+        },
+        "created_at": {
+          "title": "Added at",
+          "data_types": null
+        }
+      },
+      "inputs": {},
+      "seen": 1
+    },
+    "formula": {
+      "outputs": {
+        "result": {
+          "title": "Result",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "formula": {
+          "title": "Formula"
+        }
+      },
+      "seen": 1
+    },
+    "on-record-created": {
+      "outputs": {
+        "record": {
+          "title": "Created record",
+          "data_types": null
+        },
+        "actor": {
+          "title": "Created by",
+          "data_types": null
+        },
+        "created_at": {
+          "title": "Created at",
+          "data_types": null
+        }
+      },
+      "inputs": {
+        "entity_definition_id": {
+          "title": "Object"
+        }
+      },
+      "seen": 1
+    }
+  }
+}

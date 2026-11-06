@@ -1,0 +1,2721 @@
+{
+  "_note": "Schema + prerequisite corpus for app-provided workflow blocks, read from each app's SOURCE. Keyed by app slug (GET /apps .slug), then app_block_id. app_id is NOT recorded: dev builds of the same app run under different app ids, so always resolve it live (list_app_blocks). Maintained by Neon Deer Data Labs.",
+  "portal_url": "https://app.neondeerdata.com",
+  "apps": {
+    "workflow-utilities": {
+      "title": "Advanced Workflow Automations",
+      "developer": "Neon Deer Data Labs",
+      "source": "Neon Deer Data Labs (block schemas read from the app source)",
+      "has_workflow_blocks": true,
+      "connection": "Sign up (free) at https://app.neondeerdata.com, then in Attio go to Workspace settings > Apps > Advanced Workflow Automations and connect Neon Deer.",
+      "connection_failure": "Steps return a non-retryable \"Advanced Workflow Automations steps need a Neon Deer organization…\" error; triggers refuse to turn on when the workflow is published.",
+      "guidance": [
+        "Every block needs the Neon Deer connection, including on the free plan.",
+        "Plan gates: automations.lookup (Find lookup table row) and automations.schedule (scheduled runs + subflows) are withheld on free, included on trial/paid.",
+        "Organization time zone (https://app.neondeerdata.com/settings/general) is the default for schedules.",
+        "https://app.neondeerdata.com/automations shows Scheduled runs, Activity (\"Needs attention\" failures) and Settings (task baseline)."
+      ],
+      "global_notes": [
+        "All 36 dirs under src/app/blocks define Workflows.defineWorkflowBlock (none is a non-workflow block); none is marked deprecated or hidden.",
+        "Every block is gated by hasBlockCapability(<id>) (capability \"automations\" via Neon Deer connection): steps return a non-retryable error, triggers silently no-op when denied.",
+        "Optional outcome fields (e.g. created_by/updated_by/deleted_by, deadline_at, meeting_id) are omitted from runtime data when empty rather than emitted as null.",
+        "Shared factories resolved: actorOutcomeStruct = attioActor; parentRecordOutcomeStruct = attioRecord titled 'Parent record'; noteOutcomeStruct = attioNote; linkedRecordFields = linked_record_count:number + linked_records:array<attioRecord>; memberDetailsOutcomeStruct = struct{access_level,avatar_url,email,first_name,full_name,last_name}; optionalFields marks every field optional.",
+        "UI-only defaults come from useConfigurator(block, {defaults}); when writing config via API these are NOT applied, so runtime fallbacks apply instead (see per-block notes)."
+      ],
+      "disabled_blocks": [
+        "e-value-check-primary"
+      ],
+      "blocks": {
+        "a-note-content-updated": {
+          "type": "trigger",
+          "title": "Note content updated",
+          "description": "Starts when a note's text is edited, at most once every 5 minutes per note.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "updated",
+              "fields": [
+                {
+                  "name": "note_id",
+                  "type": "string",
+                  "title": "Note ID"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "updated_by",
+                  "type": "attioActor (optional)",
+                  "title": "Updated by",
+                  "notes": "omitted when actor cannot be built"
+                },
+                {
+                  "name": "content_plaintext",
+                  "type": "string",
+                  "title": "Content"
+                },
+                {
+                  "name": "parent",
+                  "type": "attioRecord",
+                  "title": "Parent record"
+                },
+                {
+                  "name": "title",
+                  "type": "string",
+                  "title": "Title"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "a-note-create": {
+          "type": "step",
+          "title": "Create note",
+          "description": "Adds a note to a record, with this app as the author.",
+          "config": [
+            {
+              "key": "title",
+              "schema_type": "string",
+              "optional": false
+            },
+            {
+              "key": "format",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "rich_text",
+                "markdown",
+                "plaintext"
+              ],
+              "optional": false,
+              "notes": "UI default rich_text (useConfigurator default); disableVariables; runtime defaults to rich_text if absent"
+            },
+            {
+              "key": "content_rich",
+              "schema_type": "richText",
+              "optional": true,
+              "notes": "only read when format=rich_text (converted via toMarkdown, sent as markdown)"
+            },
+            {
+              "key": "content",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "only read when format=markdown or plaintext"
+            },
+            {
+              "key": "parent_record",
+              "schema_type": "attioRecord",
+              "optional": false,
+              "notes": "needs recordId and object"
+            },
+            {
+              "key": "meeting_id",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "invalid meeting IDs fail the step"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "created",
+              "fields": [
+                {
+                  "name": "note_id",
+                  "type": "string",
+                  "title": "Note ID"
+                },
+                {
+                  "name": "meeting_id",
+                  "type": "string (optional)",
+                  "title": "Meeting ID",
+                  "notes": "only emitted when note has meeting_id"
+                },
+                {
+                  "name": "note",
+                  "type": "attioNote",
+                  "title": "Created note"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "a-note-deleted": {
+          "type": "trigger",
+          "title": "Note deleted",
+          "description": "Starts when a note is deleted.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "deleted",
+              "fields": [
+                {
+                  "name": "note_id",
+                  "type": "string",
+                  "title": "Note ID"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "deleted_by",
+                  "type": "attioActor (optional)",
+                  "title": "Deleted by"
+                },
+                {
+                  "name": "parent",
+                  "type": "attioRecord",
+                  "title": "Parent record",
+                  "notes": "object slug may be \"\" if parent object unresolvable"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "a-note-find": {
+          "type": "step",
+          "title": "Find notes",
+          "description": "Finds notes by object, record, note ID, author, created date, or meeting.",
+          "config": [
+            {
+              "key": "note_id",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "if set, fetches only this note; other filters still applied"
+            },
+            {
+              "key": "parent_object",
+              "schema_type": "attioObject",
+              "optional": true,
+              "notes": "UI disableVariables; filters client-side by parent_object"
+            },
+            {
+              "key": "parent_record",
+              "schema_type": "attioRecord",
+              "optional": true,
+              "notes": "UI only shows when parent_object chosen or record already set; must be complete (recordId+object) and match parent_object if both set"
+            },
+            {
+              "key": "created_by",
+              "schema_type": "attioActor",
+              "optional": true,
+              "notes": "UI restricts to workspace members; compared to note.created_by_actor_id via actorId"
+            },
+            {
+              "key": "created_before",
+              "schema_type": "timestamp",
+              "optional": true,
+              "notes": "exclusive"
+            },
+            {
+              "key": "created_after",
+              "schema_type": "timestamp",
+              "optional": true,
+              "notes": "inclusive"
+            },
+            {
+              "key": "meeting_status",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "any",
+                "has_meeting",
+                "no_meeting"
+              ],
+              "optional": true,
+              "notes": "UI default any; disableVariables"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "completed",
+              "fields": [
+                {
+                  "name": "count",
+                  "type": "number",
+                  "title": "Count"
+                },
+                {
+                  "name": "note_ids",
+                  "type": "array<string>",
+                  "title": "Note IDs"
+                },
+                {
+                  "name": "has_more_matches",
+                  "type": "boolean",
+                  "title": "Has more matches"
+                },
+                {
+                  "name": "notes",
+                  "type": "array<attioNote>",
+                  "title": "Notes"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "a-note-move": {
+          "type": "step",
+          "title": "Move note",
+          "description": "Moves a note to another record, keeping its title, formatting, and meeting link.",
+          "config": [
+            {
+              "key": "source_note_id",
+              "schema_type": "string",
+              "optional": false
+            },
+            {
+              "key": "target_parent_object",
+              "schema_type": "attioObject",
+              "optional": false,
+              "notes": "UI disableVariables; runtime only validates it matches target_parent_record.object"
+            },
+            {
+              "key": "target_parent_record",
+              "schema_type": "attioRecord",
+              "optional": false,
+              "notes": "UI only shows once target_parent_object is set"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "moved",
+              "fields": [
+                {
+                  "name": "note_id",
+                  "type": "string",
+                  "title": "Note ID"
+                },
+                {
+                  "name": "meeting_id",
+                  "type": "string (optional)",
+                  "title": "Meeting ID",
+                  "notes": "only emitted when moved note has meeting_id"
+                },
+                {
+                  "name": "note",
+                  "type": "attioNote",
+                  "title": "Moved note"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "a-note-title-updated": {
+          "type": "trigger",
+          "title": "Note title updated",
+          "description": "Starts when a note is renamed, at most once every 5 minutes per note.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "updated",
+              "fields": [
+                {
+                  "name": "note_id",
+                  "type": "string",
+                  "title": "Note ID"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "updated_by",
+                  "type": "attioActor (optional)",
+                  "title": "Updated by"
+                },
+                {
+                  "name": "content_plaintext",
+                  "type": "string",
+                  "title": "Content"
+                },
+                {
+                  "name": "meeting_id",
+                  "type": "string (optional)",
+                  "title": "Meeting ID",
+                  "notes": "emitted only when note has a meeting"
+                },
+                {
+                  "name": "parent",
+                  "type": "attioRecord",
+                  "title": "Parent record"
+                },
+                {
+                  "name": "title",
+                  "type": "string",
+                  "title": "Title",
+                  "notes": "post-rename title; prior title not available"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "b-task-assignee-changed": {
+          "type": "trigger",
+          "title": "Task assignee changed",
+          "description": "Starts when people are added to or removed from a task.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "assignee_changed",
+              "fields": [
+                {
+                  "name": "task",
+                  "type": "attioTask",
+                  "title": "Task"
+                },
+                {
+                  "name": "task_id",
+                  "type": "string",
+                  "title": "Task ID"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "updated_by",
+                  "type": "attioActor (optional)",
+                  "title": "Updated by"
+                },
+                {
+                  "name": "new_assignees",
+                  "type": "array<attioActor>",
+                  "title": "New assignees",
+                  "notes": "full current workspace-member assignee set, not just added ones"
+                },
+                {
+                  "name": "previous_assignees",
+                  "type": "array<attioActor>",
+                  "title": "Previous assignees",
+                  "notes": "full prior snapshot set"
+                },
+                {
+                  "name": "content",
+                  "type": "string",
+                  "title": "Content"
+                },
+                {
+                  "name": "deadline_at",
+                  "type": "date (optional)",
+                  "title": "Deadline"
+                },
+                {
+                  "name": "linked_record_count",
+                  "type": "number",
+                  "title": "Linked record count"
+                },
+                {
+                  "name": "linked_records",
+                  "type": "array<attioRecord>",
+                  "title": "Linked records"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": [
+              "Relies on a one-time task baseline. Check its status (admins can Re-run) at https://app.neondeerdata.com/automations > Settings."
+            ]
+          }
+        },
+        "b-task-created": {
+          "type": "trigger",
+          "title": "Task created",
+          "description": "Starts when a task is created.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "created",
+              "fields": [
+                {
+                  "name": "task",
+                  "type": "attioTask",
+                  "title": "Task"
+                },
+                {
+                  "name": "task_id",
+                  "type": "string",
+                  "title": "Task ID"
+                },
+                {
+                  "name": "created_at",
+                  "type": "timestamp (optional)",
+                  "title": "Created at"
+                },
+                {
+                  "name": "created_by",
+                  "type": "attioActor (optional)",
+                  "title": "Created by"
+                },
+                {
+                  "name": "content",
+                  "type": "string",
+                  "title": "Content"
+                },
+                {
+                  "name": "deadline_at",
+                  "type": "date (optional)",
+                  "title": "Deadline"
+                },
+                {
+                  "name": "linked_record_count",
+                  "type": "number",
+                  "title": "Linked record count"
+                },
+                {
+                  "name": "linked_records",
+                  "type": "array<attioRecord>",
+                  "title": "Linked records"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "b-task-deadline-changed": {
+          "type": "trigger",
+          "title": "Task deadline changed",
+          "description": "Starts when a task's deadline is set, changed, or cleared.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "deadline_changed",
+              "fields": [
+                {
+                  "name": "task",
+                  "type": "attioTask",
+                  "title": "Task"
+                },
+                {
+                  "name": "task_id",
+                  "type": "string",
+                  "title": "Task ID"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "updated_by",
+                  "type": "attioActor (optional)",
+                  "title": "Updated by"
+                },
+                {
+                  "name": "change_type",
+                  "type": "string",
+                  "title": "Change type",
+                  "notes": "runtime values: set | cleared | moved"
+                },
+                {
+                  "name": "deadline_at",
+                  "type": "date (optional)",
+                  "title": "Deadline",
+                  "notes": "absent when cleared"
+                },
+                {
+                  "name": "prior_deadline_at",
+                  "type": "date (optional)",
+                  "title": "Prior deadline",
+                  "notes": "absent when change_type=set"
+                },
+                {
+                  "name": "content",
+                  "type": "string",
+                  "title": "Content"
+                },
+                {
+                  "name": "linked_record_count",
+                  "type": "number",
+                  "title": "Linked record count"
+                },
+                {
+                  "name": "linked_records",
+                  "type": "array<attioRecord>",
+                  "title": "Linked records"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": [
+              "Relies on a one-time task baseline. Check its status (admins can Re-run) at https://app.neondeerdata.com/automations > Settings."
+            ]
+          }
+        },
+        "b-task-deleted": {
+          "type": "trigger",
+          "title": "Task deleted",
+          "description": "Starts when a task is deleted.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "deleted",
+              "fields": [
+                {
+                  "name": "task",
+                  "type": "attioTask",
+                  "title": "Task"
+                },
+                {
+                  "name": "task_id",
+                  "type": "string",
+                  "title": "Task ID"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "deleted_by",
+                  "type": "attioActor (optional)",
+                  "title": "Deleted by"
+                },
+                {
+                  "name": "content",
+                  "type": "string (optional)",
+                  "title": "Content",
+                  "notes": "from KV snapshot; absent if app never saw the task"
+                },
+                {
+                  "name": "prior_deadline_at",
+                  "type": "date (optional)",
+                  "title": "Prior deadline"
+                },
+                {
+                  "name": "prior_is_completed",
+                  "type": "boolean (optional)",
+                  "title": "Was completed"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": [
+              "Relies on a one-time task baseline. Check its status (admins can Re-run) at https://app.neondeerdata.com/automations > Settings."
+            ]
+          }
+        },
+        "b-task-find": {
+          "type": "step",
+          "title": "Find tasks",
+          "description": "Finds tasks by ID, status, deadline, assignee, or linked record.",
+          "config": [
+            {
+              "key": "task_id",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "fetch only this task; other filters still apply; 404 returns empty result"
+            },
+            {
+              "key": "completion_status",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "is_open",
+                "is_complete",
+                "any"
+              ],
+              "optional": true,
+              "notes": "UI default any, but runtime default when absent is is_open. Forced to is_open when deadline_status is is_overdue/is_not_overdue; is_complete + overdue statuses errors. disableVariables"
+            },
+            {
+              "key": "deadline_status",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "any",
+                "is_overdue",
+                "is_not_overdue",
+                "has_deadline",
+                "no_deadline"
+              ],
+              "optional": true,
+              "notes": "UI/runtime default any; disableVariables; no_deadline + deadline_before/after errors"
+            },
+            {
+              "key": "deadline_before",
+              "schema_type": "timestamp",
+              "optional": true,
+              "notes": "exclusive; overrides is_overdue's implicit now"
+            },
+            {
+              "key": "deadline_after",
+              "schema_type": "timestamp",
+              "optional": true,
+              "notes": "inclusive; overrides is_not_overdue's implicit now"
+            },
+            {
+              "key": "assignee",
+              "schema_type": "attioActor",
+              "optional": true,
+              "notes": "UI restricts to workspace members; matched via actorId"
+            },
+            {
+              "key": "linked_object",
+              "schema_type": "attioObject",
+              "optional": true,
+              "notes": "UI disableVariables"
+            },
+            {
+              "key": "linked_record",
+              "schema_type": "attioRecord",
+              "optional": true,
+              "notes": "UI only shown when linked_object set; ignored at runtime unless linked_object is set; object must match linked_object"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "completed",
+              "fields": [
+                {
+                  "name": "count",
+                  "type": "number",
+                  "title": "Count"
+                },
+                {
+                  "name": "tasks",
+                  "type": "array<attioTask>",
+                  "title": "Tasks"
+                },
+                {
+                  "name": "task_ids",
+                  "type": "array<string>",
+                  "title": "Task IDs"
+                },
+                {
+                  "name": "has_more_matches",
+                  "type": "boolean",
+                  "title": "Has more matches"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          },
+          "mismatches": [
+            "completion_status: the UI default is \"any\" but the runtime treats a missing value as \"is_open\". A config written via API without completion_status returns only open tasks."
+          ]
+        },
+        "b-task-status-changed": {
+          "type": "trigger",
+          "title": "Task status changed",
+          "description": "Starts when a task is marked complete or reopened.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "completed",
+              "title": "Completed",
+              "fields": [
+                {
+                  "name": "task",
+                  "type": "attioTask",
+                  "title": "Task"
+                },
+                {
+                  "name": "task_id",
+                  "type": "string",
+                  "title": "Task ID"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "updated_by",
+                  "type": "attioActor (optional)",
+                  "title": "Updated by"
+                },
+                {
+                  "name": "is_completed",
+                  "type": "boolean",
+                  "title": "Is completed"
+                },
+                {
+                  "name": "completed_at",
+                  "type": "timestamp (optional)",
+                  "title": "Completed at"
+                },
+                {
+                  "name": "content",
+                  "type": "string",
+                  "title": "Content"
+                },
+                {
+                  "name": "deadline_at",
+                  "type": "date (optional)",
+                  "title": "Deadline"
+                },
+                {
+                  "name": "linked_record_count",
+                  "type": "number",
+                  "title": "Linked record count"
+                },
+                {
+                  "name": "linked_records",
+                  "type": "array<attioRecord>",
+                  "title": "Linked records"
+                }
+              ]
+            },
+            {
+              "id": "uncompleted",
+              "title": "Uncompleted",
+              "fields": [
+                {
+                  "name": "task",
+                  "type": "attioTask",
+                  "title": "Task"
+                },
+                {
+                  "name": "task_id",
+                  "type": "string",
+                  "title": "Task ID"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "updated_by",
+                  "type": "attioActor (optional)",
+                  "title": "Updated by"
+                },
+                {
+                  "name": "is_completed",
+                  "type": "boolean",
+                  "title": "Is completed"
+                },
+                {
+                  "name": "content",
+                  "type": "string",
+                  "title": "Content"
+                },
+                {
+                  "name": "deadline_at",
+                  "type": "date (optional)",
+                  "title": "Deadline"
+                },
+                {
+                  "name": "linked_record_count",
+                  "type": "number",
+                  "title": "Linked record count"
+                },
+                {
+                  "name": "linked_records",
+                  "type": "array<attioRecord>",
+                  "title": "Linked records"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": [
+              "Relies on a one-time task baseline. Check its status (admins can Re-run) at https://app.neondeerdata.com/automations > Settings."
+            ]
+          }
+        },
+        "c-lookup-row-find": {
+          "type": "step",
+          "title": "Find lookup table row",
+          "description": "Finds a row in a Neon Deer table and passes its fields to later steps. For example, look up an Attio workspace member's Slack ID and use it to alert them of a deal assignment, or look up a new prospect's country in a territory table to find its default sales owner.",
+          "config": [
+            {
+              "key": "table_id",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "UUID of a Neon Deer lookup table (combobox from platform API); disableVariables"
+            },
+            {
+              "key": "lookup_definition_id",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "UUID of the table's lookup definition; for member-type definitions the 'by ID' choice is stored as \"<definitionId>#id\"; disableVariables"
+            },
+            {
+              "key": "lookup_text",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "read only when definition valueType=text"
+            },
+            {
+              "key": "lookup_number",
+              "schema_type": "number",
+              "optional": true,
+              "notes": "valueType=number"
+            },
+            {
+              "key": "lookup_boolean",
+              "schema_type": "boolean",
+              "optional": true,
+              "notes": "valueType=boolean; UI default false"
+            },
+            {
+              "key": "lookup_date",
+              "schema_type": "date",
+              "optional": true,
+              "notes": "valueType=date; runtime expects {value}"
+            },
+            {
+              "key": "lookup_timestamp",
+              "schema_type": "timestamp",
+              "optional": true,
+              "notes": "valueType=timestamp"
+            },
+            {
+              "key": "lookup_email",
+              "schema_type": "emailAddress",
+              "optional": true,
+              "notes": "valueType=email; runtime reads .original"
+            },
+            {
+              "key": "lookup_domain",
+              "schema_type": "domain",
+              "optional": true,
+              "notes": "valueType=domain; runtime reads .original"
+            },
+            {
+              "key": "lookup_phone",
+              "schema_type": "phoneNumber",
+              "optional": true,
+              "notes": "valueType=phone; runtime reads .normalized"
+            },
+            {
+              "key": "lookup_url",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "valueType=url"
+            },
+            {
+              "key": "lookup_member",
+              "schema_type": "attioActor",
+              "optional": true,
+              "notes": "valueType=member and lookup_definition_id has no #id suffix; must be workspace-member actor"
+            },
+            {
+              "key": "lookup_member_id",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "valueType=member and lookup_definition_id ends with #id"
+            },
+            {
+              "key": "lookup_record",
+              "schema_type": "attioRecord",
+              "optional": true,
+              "notes": "valueType=record; UI shows only after record_object chosen"
+            },
+            {
+              "key": "record_object",
+              "schema_type": "attioObject",
+              "optional": true,
+              "notes": "UI-only helper for the record picker (disableVariables); not read by runtime"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "completed",
+              "condition": "schema is dynamic: built from the selected table's fields (null until table loads)",
+              "fields": [
+                {
+                  "name": "found",
+                  "type": "boolean",
+                  "title": "Found"
+                },
+                {
+                  "name": "<field.key> (one per table field)",
+                  "type": "dynamic per field valueType (optional): text->string, number->number, boolean->boolean, date->date, timestamp->timestamp, email->emailAddress, domain->domain, url->string, member->attioActor, record->attioRecord, phone->phoneNumber",
+                  "title": "field label (member fields strip trailing ' ID')",
+                  "notes": "emitted only when found and value present"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": "automations.lookup",
+            "portal": [
+              "Create the lookup table at https://app.neondeerdata.com/automations/tables (\"New table\": blank, synced from Attio, library, or CSV import).",
+              "On its Fields tab, turn on \"Lookup key\" for the field the workflow searches by, and \"Return to workflows\" for every field this step should output.",
+              "Add rows in the Data grid (or import a CSV; importing into an existing table needs the lookup key first)."
+            ],
+            "ids": [
+              "table_id: the table uuid, visible only in the portal URL (?table=<uuid>). Ask the human for the table URL.",
+              "lookup_definition_id: NOT shown anywhere in the portal UI. Easiest source is a Find lookup table row block already configured in the Attio UI against this table (read it with get_workflow). Member-type keys matched by ID text store \"<definitionId>#id\"."
+            ],
+            "failures": [
+              "Free plan: \"Your Neon Deer plan doesn't include lookup tables. Upgrade at https://app.neondeerdata.com/settings/billing.\"",
+              "Table or key field deleted: \"The selected table or lookup field is no longer available. Choose it again in this step.\"",
+              "No matching row is NOT an error: outcome \"completed\" with found=false."
+            ]
+          }
+        },
+        "c-member-find": {
+          "type": "step",
+          "title": "Find workspace member",
+          "description": "Finds an Attio workspace member by ID or email address.",
+          "config": [
+            {
+              "key": "find_by",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "member_id",
+                "email"
+              ],
+              "optional": false,
+              "notes": "disableVariables; outcome schema null until set"
+            },
+            {
+              "key": "workspace_member_id",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "read when find_by!=email; must be UUID else count 0"
+            },
+            {
+              "key": "email",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "read when find_by!=member_id"
+            },
+            {
+              "key": "case_sensitive",
+              "schema_type": "boolean",
+              "optional": true,
+              "notes": "UI and runtime default true; email mode only"
+            },
+            {
+              "key": "normalize_email",
+              "schema_type": "boolean",
+              "optional": true,
+              "notes": "UI and runtime default true; strips +tags and dots from local part"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "completed",
+              "condition": "schema declared only once find_by is set",
+              "fields": [
+                {
+                  "name": "member",
+                  "type": "attioActor (optional)",
+                  "title": "Member"
+                },
+                {
+                  "name": "workspace_member_id",
+                  "type": "string (optional)",
+                  "title": "Attio workspace member ID"
+                },
+                {
+                  "name": "count",
+                  "type": "number",
+                  "title": "Count",
+                  "notes": "0 or 1"
+                },
+                {
+                  "name": "member_details",
+                  "type": "struct (optional)",
+                  "title": "Member details",
+                  "children": [
+                    {
+                      "name": "access_level",
+                      "type": "string",
+                      "title": "Access level"
+                    },
+                    {
+                      "name": "avatar_url",
+                      "type": "string",
+                      "title": "Avatar URL"
+                    },
+                    {
+                      "name": "email",
+                      "type": "string",
+                      "title": "Email"
+                    },
+                    {
+                      "name": "first_name",
+                      "type": "string",
+                      "title": "First name"
+                    },
+                    {
+                      "name": "full_name",
+                      "type": "string",
+                      "title": "Full name"
+                    },
+                    {
+                      "name": "last_name",
+                      "type": "string",
+                      "title": "Last name"
+                    }
+                  ]
+                },
+                {
+                  "name": "normalized_email",
+                  "type": "string (optional)",
+                  "title": "Normalized email",
+                  "notes": "emitted whenever an email was input"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "d-compare-members": {
+          "type": "step",
+          "title": "Compare members",
+          "description": "Compares two sets of Attio workspace members and shows which are only in A, only in B, or in both. For example, a task's assignees before and after a change.",
+          "config": [
+            {
+              "key": "previous_members",
+              "schema_type": "array<attioActor>",
+              "optional": true,
+              "notes": "UI label 'Set A'; workspace members only (others error)"
+            },
+            {
+              "key": "new_members",
+              "schema_type": "array<attioActor>",
+              "optional": true,
+              "notes": "UI label 'Set B'; at least one of the two must be set"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "changed",
+              "fields": [
+                {
+                  "name": "changed",
+                  "type": "struct",
+                  "title": "Differences",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "members",
+                      "type": "array<attioActor>",
+                      "title": "Members"
+                    }
+                  ]
+                },
+                {
+                  "name": "unchanged",
+                  "type": "struct",
+                  "title": "In both",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "members",
+                      "type": "array<attioActor>",
+                      "title": "Members"
+                    }
+                  ]
+                },
+                {
+                  "name": "removed",
+                  "type": "struct",
+                  "title": "Only in A",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "members",
+                      "type": "array<attioActor>",
+                      "title": "Members"
+                    }
+                  ]
+                },
+                {
+                  "name": "added",
+                  "type": "struct",
+                  "title": "Only in B",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "members",
+                      "type": "array<attioActor>",
+                      "title": "Members"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "d-compare-records": {
+          "type": "step",
+          "title": "Compare records",
+          "description": "Compares two sets of records and shows which are only in A, only in B, or in both. For example, the people linked to a company before and after an update.",
+          "config": [
+            {
+              "key": "record_object",
+              "schema_type": "attioObject",
+              "optional": false,
+              "notes": "UI disableVariables; record inputs only shown after it is set; runtime errors if any wired record has a different object"
+            },
+            {
+              "key": "previous_records",
+              "schema_type": "array<attioRecord>",
+              "optional": true,
+              "notes": "UI 'Set A' (multi)"
+            },
+            {
+              "key": "new_records",
+              "schema_type": "array<attioRecord>",
+              "optional": true,
+              "notes": "UI 'Set B' (multi); at least one of the two must be set"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "changed",
+              "fields": [
+                {
+                  "name": "changed",
+                  "type": "struct",
+                  "title": "Differences",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "records",
+                      "type": "array<attioRecord>",
+                      "title": "Records"
+                    }
+                  ]
+                },
+                {
+                  "name": "unchanged",
+                  "type": "struct",
+                  "title": "In both",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "records",
+                      "type": "array<attioRecord>",
+                      "title": "Records"
+                    }
+                  ]
+                },
+                {
+                  "name": "removed",
+                  "type": "struct",
+                  "title": "Only in A",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "records",
+                      "type": "array<attioRecord>",
+                      "title": "Records"
+                    }
+                  ]
+                },
+                {
+                  "name": "added",
+                  "type": "struct",
+                  "title": "Only in B",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "records",
+                      "type": "array<attioRecord>",
+                      "title": "Records"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "d-compare-values": {
+          "type": "step",
+          "title": "Compare values",
+          "description": "Compares two sets of email addresses, domains, or phone numbers and shows which are only in A, only in B, or in both. For example, a person's emails before and after an update.",
+          "config": [
+            {
+              "key": "attribute_type",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "domain",
+                "email",
+                "phone"
+              ],
+              "optional": false,
+              "notes": "disableVariables; runtime defaults to domain if absent; selects which pair of keys is read"
+            },
+            {
+              "key": "previous_domain_values",
+              "schema_type": "array<domain>",
+              "optional": true,
+              "notes": "read when attribute_type=domain (Set A)"
+            },
+            {
+              "key": "new_domain_values",
+              "schema_type": "array<domain>",
+              "optional": true,
+              "notes": "read when attribute_type=domain (Set B)"
+            },
+            {
+              "key": "previous_email_values",
+              "schema_type": "array<emailAddress>",
+              "optional": true,
+              "notes": "read when attribute_type=email (Set A)"
+            },
+            {
+              "key": "new_email_values",
+              "schema_type": "array<emailAddress>",
+              "optional": true,
+              "notes": "read when attribute_type=email (Set B)"
+            },
+            {
+              "key": "previous_phone_values",
+              "schema_type": "array<phoneNumber>",
+              "optional": true,
+              "notes": "read when attribute_type=phone (Set A)"
+            },
+            {
+              "key": "new_phone_values",
+              "schema_type": "array<phoneNumber>",
+              "optional": true,
+              "notes": "read when attribute_type=phone (Set B)"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "changed",
+              "fields": [
+                {
+                  "name": "changed",
+                  "type": "struct",
+                  "title": "Differences",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "values",
+                      "type": "array<string>",
+                      "title": "Values"
+                    },
+                    {
+                      "name": "values_text",
+                      "type": "string",
+                      "title": "Values text"
+                    }
+                  ]
+                },
+                {
+                  "name": "unchanged",
+                  "type": "struct",
+                  "title": "In both",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "values",
+                      "type": "array<string>",
+                      "title": "Values"
+                    },
+                    {
+                      "name": "values_text",
+                      "type": "string",
+                      "title": "Values text"
+                    }
+                  ]
+                },
+                {
+                  "name": "removed",
+                  "type": "struct",
+                  "title": "Only in A",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "values",
+                      "type": "array<string>",
+                      "title": "Values"
+                    },
+                    {
+                      "name": "values_text",
+                      "type": "string",
+                      "title": "Values text"
+                    }
+                  ]
+                },
+                {
+                  "name": "added",
+                  "type": "struct",
+                  "title": "Only in B",
+                  "children": [
+                    {
+                      "name": "count",
+                      "type": "number",
+                      "title": "Count"
+                    },
+                    {
+                      "name": "values",
+                      "type": "array<string>",
+                      "title": "Values"
+                    },
+                    {
+                      "name": "values_text",
+                      "type": "string",
+                      "title": "Values text"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "e-value-get-primary": {
+          "type": "step",
+          "title": "Get primary value",
+          "description": "Returns the first (primary) email, domain, or phone number. For example, the main email of a person who has several.",
+          "config": [
+            {
+              "key": "attribute_type",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "domain",
+                "email",
+                "phone"
+              ],
+              "optional": false,
+              "notes": "disableVariables; runtime defaults to domain if absent"
+            },
+            {
+              "key": "domain_values",
+              "schema_type": "array<domain>",
+              "optional": true,
+              "notes": "read when attribute_type=domain; required at runtime for that type"
+            },
+            {
+              "key": "email_values",
+              "schema_type": "array<emailAddress>",
+              "optional": true,
+              "notes": "read when attribute_type=email"
+            },
+            {
+              "key": "phone_values",
+              "schema_type": "array<phoneNumber>",
+              "optional": true,
+              "notes": "read when attribute_type=phone"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "completed",
+              "fields": [
+                {
+                  "name": "primary",
+                  "type": "string",
+                  "title": "Primary",
+                  "notes": "first value, lowercased/trimmed; \"\" if empty list"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "e-value-transform": {
+          "type": "step",
+          "title": "Convert value",
+          "description": "Converts text into a true/false value, number, date, or timestamp. For example, a form answer of yes becomes true.",
+          "config": [
+            {
+              "key": "input",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "trimmed before conversion"
+            },
+            {
+              "key": "target_type",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "boolean",
+                "number",
+                "integer",
+                "date",
+                "timestamp",
+                "string"
+              ],
+              "optional": false,
+              "notes": "runtime default string if absent; variables NOT disabled on this combobox; UI labels date='Date (YYYY-MM-DD)', timestamp='Timestamp (ISO 8601)'"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "converted",
+              "title": "Converted",
+              "fields": [
+                {
+                  "name": "value",
+                  "type": "string",
+                  "title": "Value",
+                  "notes": "always emitted as a string regardless of target_type"
+                }
+              ]
+            },
+            {
+              "id": "invalid_input",
+              "title": "Invalid input",
+              "fields": [
+                {
+                  "name": "error_message",
+                  "type": "string",
+                  "title": "Error message"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "e-value-transform-html-to-markdown": {
+          "type": "step",
+          "title": "Convert HTML to markdown",
+          "description": "Converts HTML into markdown text. For example, an email body to save as a note.",
+          "config": [
+            {
+              "key": "html",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "must be non-blank and <= 1,000,000 chars or step errors"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "converted",
+              "fields": [
+                {
+                  "name": "markdown",
+                  "type": "string",
+                  "title": "Markdown"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "f-call-recording-created": {
+          "type": "trigger",
+          "title": "Call recording created",
+          "description": "Starts when a call recording finishes processing.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "created",
+              "fields": [
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "created_by",
+                  "type": "attioActor (optional)",
+                  "title": "Created by"
+                },
+                {
+                  "name": "call_recording_id",
+                  "type": "string",
+                  "title": "Call recording ID"
+                },
+                {
+                  "name": "meeting_id",
+                  "type": "string",
+                  "title": "Meeting ID"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "f-call-recording-transcript-get": {
+          "type": "step",
+          "title": "Get call transcript",
+          "description": "Gets a call's transcript, waiting up to 15 minutes while Attio transcribes it.",
+          "config": [
+            {
+              "key": "meeting_id",
+              "schema_type": "string",
+              "optional": false
+            },
+            {
+              "key": "call_recording_id",
+              "schema_type": "string",
+              "optional": false
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "ready",
+              "fields": [
+                {
+                  "name": "raw_transcript",
+                  "type": "string",
+                  "title": "Raw transcript"
+                },
+                {
+                  "name": "segment_count",
+                  "type": "number",
+                  "title": "Segment count"
+                },
+                {
+                  "name": "has_more_matches",
+                  "type": "boolean",
+                  "title": "Has more matches",
+                  "notes": "runtime maps transcript.truncated"
+                },
+                {
+                  "name": "web_url",
+                  "type": "string",
+                  "title": "Web URL"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "f-meeting-get": {
+          "type": "step",
+          "title": "Get meeting",
+          "description": "Gets a meeting by its ID.",
+          "config": [
+            {
+              "key": "meeting_id",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "blank returns found=false rather than erroring"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "completed",
+              "fields": [
+                {
+                  "name": "found",
+                  "type": "boolean",
+                  "title": "Found"
+                },
+                {
+                  "name": "created_at",
+                  "type": "timestamp (optional)",
+                  "title": "Created at"
+                },
+                {
+                  "name": "created_by",
+                  "type": "attioActor (optional)",
+                  "title": "Created by"
+                },
+                {
+                  "name": "description",
+                  "type": "string (optional)",
+                  "title": "Description"
+                },
+                {
+                  "name": "end_at",
+                  "type": "timestamp (optional)",
+                  "title": "End at"
+                },
+                {
+                  "name": "end_timezone",
+                  "type": "string (optional)",
+                  "title": "End timezone"
+                },
+                {
+                  "name": "is_all_day",
+                  "type": "boolean (optional)",
+                  "title": "Is all day"
+                },
+                {
+                  "name": "linked_record_count",
+                  "type": "number (optional)",
+                  "title": "Linked record count"
+                },
+                {
+                  "name": "linked_records",
+                  "type": "array<attioRecord> (optional)",
+                  "title": "Linked records"
+                },
+                {
+                  "name": "meeting_id",
+                  "type": "string (optional)",
+                  "title": "Meeting ID"
+                },
+                {
+                  "name": "organizer_emails",
+                  "type": "array<string> (optional)",
+                  "title": "Organizer emails"
+                },
+                {
+                  "name": "participant_count",
+                  "type": "number (optional)",
+                  "title": "Participant count"
+                },
+                {
+                  "name": "participant_emails",
+                  "type": "array<string> (optional)",
+                  "title": "Participant emails"
+                },
+                {
+                  "name": "start_at",
+                  "type": "timestamp (optional)",
+                  "title": "Start at"
+                },
+                {
+                  "name": "start_timezone",
+                  "type": "string (optional)",
+                  "title": "Start timezone"
+                },
+                {
+                  "name": "title",
+                  "type": "string (optional)",
+                  "title": "Title"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "g-comment-created": {
+          "type": "trigger",
+          "title": "Comment created",
+          "description": "Starts when someone comments on a record or list entry.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "created",
+              "fields": [
+                {
+                  "name": "created_at",
+                  "type": "timestamp (optional)",
+                  "title": "Created at"
+                },
+                {
+                  "name": "created_by",
+                  "type": "attioActor (optional)",
+                  "title": "Created by"
+                },
+                {
+                  "name": "comment_id",
+                  "type": "string",
+                  "title": "Comment ID"
+                },
+                {
+                  "name": "content_plaintext",
+                  "type": "string",
+                  "title": "Content"
+                },
+                {
+                  "name": "entry_id",
+                  "type": "string (optional)",
+                  "title": "Entry ID",
+                  "notes": "only for list-entry comments"
+                },
+                {
+                  "name": "list_id",
+                  "type": "string (optional)",
+                  "title": "List ID",
+                  "notes": "only for list-entry comments"
+                },
+                {
+                  "name": "parent",
+                  "type": "attioRecord",
+                  "title": "Parent record"
+                },
+                {
+                  "name": "thread_id",
+                  "type": "string",
+                  "title": "Thread ID"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "g-comment-get": {
+          "type": "step",
+          "title": "Get comment",
+          "description": "Gets a comment by its ID.",
+          "config": [
+            {
+              "key": "comment_id",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "blank returns found=false"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "completed",
+              "fields": [
+                {
+                  "name": "found",
+                  "type": "boolean",
+                  "title": "Found"
+                },
+                {
+                  "name": "created_at",
+                  "type": "timestamp (optional)",
+                  "title": "Created at"
+                },
+                {
+                  "name": "created_by",
+                  "type": "attioActor (optional)",
+                  "title": "Created by"
+                },
+                {
+                  "name": "comment_id",
+                  "type": "string (optional)",
+                  "title": "Comment ID"
+                },
+                {
+                  "name": "content_plaintext",
+                  "type": "string (optional)",
+                  "title": "Content"
+                },
+                {
+                  "name": "entry_id",
+                  "type": "string (optional)",
+                  "title": "Entry ID"
+                },
+                {
+                  "name": "list_id",
+                  "type": "string (optional)",
+                  "title": "List ID"
+                },
+                {
+                  "name": "parent",
+                  "type": "attioRecord (optional)",
+                  "title": "Parent record"
+                },
+                {
+                  "name": "resolved_at",
+                  "type": "timestamp (optional)",
+                  "title": "Resolved at"
+                },
+                {
+                  "name": "resolved_by",
+                  "type": "attioActor (optional)",
+                  "title": "Resolved by"
+                },
+                {
+                  "name": "thread_id",
+                  "type": "string (optional)",
+                  "title": "Thread ID"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "g-thread-get": {
+          "type": "step",
+          "title": "Get comment thread",
+          "description": "Gets a comment thread by its ID.",
+          "config": [
+            {
+              "key": "thread_id",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "blank returns found=false"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "completed",
+              "fields": [
+                {
+                  "name": "found",
+                  "type": "boolean",
+                  "title": "Found"
+                },
+                {
+                  "name": "created_at",
+                  "type": "timestamp (optional)",
+                  "title": "Created at"
+                },
+                {
+                  "name": "created_by",
+                  "type": "attioActor (optional)",
+                  "title": "Created by",
+                  "notes": "first comment author"
+                },
+                {
+                  "name": "comment_count",
+                  "type": "number (optional)",
+                  "title": "Comment count"
+                },
+                {
+                  "name": "comment_ids",
+                  "type": "array<string> (optional)",
+                  "title": "Comment IDs"
+                },
+                {
+                  "name": "first_comment_content",
+                  "type": "string (optional)",
+                  "title": "First comment content"
+                },
+                {
+                  "name": "first_comment_id",
+                  "type": "string (optional)",
+                  "title": "First comment ID"
+                },
+                {
+                  "name": "is_open",
+                  "type": "boolean (optional)",
+                  "title": "Is open"
+                },
+                {
+                  "name": "last_comment_content",
+                  "type": "string (optional)",
+                  "title": "Last comment content"
+                },
+                {
+                  "name": "last_comment_id",
+                  "type": "string (optional)",
+                  "title": "Last comment ID"
+                },
+                {
+                  "name": "thread_id",
+                  "type": "string (optional)",
+                  "title": "Thread ID"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "h-fail-workflow": {
+          "type": "step",
+          "title": "Fail workflow",
+          "description": "Stops the workflow and marks the run as failed. For example, when a deal reaches this step without an amount.",
+          "config": [
+            {
+              "key": "message",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "blank falls back to \"Workflow stopped intentionally.\""
+            }
+          ],
+          "outcomes": [],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "i-folder-create": {
+          "type": "step",
+          "title": "Create folder",
+          "description": "Creates a folder on a record, or reuses one with the same name.",
+          "config": [
+            {
+              "key": "object",
+              "schema_type": "attioObject",
+              "optional": false,
+              "notes": "UI disableVariables; record input only shown once set; runtime validates it matches record.object"
+            },
+            {
+              "key": "name",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "normalized; empty after normalization errors"
+            },
+            {
+              "key": "record",
+              "schema_type": "attioRecord",
+              "optional": false
+            },
+            {
+              "key": "storage_provider",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "attio"
+              ],
+              "optional": false,
+              "notes": "UI default attio (set implicitly); runtime defaults attio if absent; disableVariables"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "created",
+              "fields": [
+                {
+                  "name": "folder_id",
+                  "type": "string",
+                  "title": "Folder ID"
+                },
+                {
+                  "name": "was_created",
+                  "type": "boolean",
+                  "title": "Newly created",
+                  "notes": "false when an existing same-name folder was reused"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "j-schedule-record": {
+          "type": "step",
+          "title": "Schedule a workflow run",
+          "description": "Schedules a record into a workflow that starts with the 'Start a scheduled run' trigger. For example, start renewal outreach 30 days before a contract ends.",
+          "config": [
+            {
+              "key": "object",
+              "schema_type": "attioObject",
+              "optional": false,
+              "notes": "UI disableVariables; other inputs only shown once set; must equal record.object"
+            },
+            {
+              "key": "workflow_id",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "NOT a bare workflow ID: JSON-encoded tuple string '[\"<workflowId>\",\"<entryPointId>\"]' (targetValue/parseTarget). Target workflow must start with j-scheduled-record. disableVariables"
+            },
+            {
+              "key": "run_at",
+              "schema_type": "timestamp",
+              "optional": false,
+              "notes": "rounded to nearest 15 minutes"
+            },
+            {
+              "key": "record",
+              "schema_type": "attioRecord",
+              "optional": false
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "scheduled",
+              "fields": [
+                {
+                  "name": "scheduled_run_id",
+                  "type": "string",
+                  "title": "Scheduled run ID"
+                },
+                {
+                  "name": "scheduled_for",
+                  "type": "timestamp",
+                  "title": "Scheduled for"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": "automations.schedule",
+            "portal": [
+              "Needs a paid or trial plan (https://app.neondeerdata.com/settings/billing). The free plan withholds scheduling and subflows.",
+              "Build the TARGET workflow first, starting with the \"Start a scheduled run\" trigger, and have it turned on in Attio. It only becomes selectable once live."
+            ]
+          }
+        },
+        "j-scheduled-record": {
+          "type": "trigger",
+          "title": "Start a scheduled run",
+          "description": "Starts at the chosen time for each record scheduled into this workflow. For example, renewal outreach for selected companies next month.",
+          "config": [
+            {
+              "key": "object",
+              "schema_type": "attioObject",
+              "optional": false,
+              "notes": "UI disableVariables"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "scheduled",
+              "fields": [
+                {
+                  "name": "record",
+                  "type": "attioRecord",
+                  "title": "Record"
+                },
+                {
+                  "name": "record_id",
+                  "type": "string",
+                  "title": "Record ID"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "scheduled_for",
+                  "type": "timestamp",
+                  "title": "Scheduled for"
+                },
+                {
+                  "name": "scheduled_by",
+                  "type": "attioActor",
+                  "title": "Scheduled by",
+                  "notes": "required (not optional); trigger no-ops if actor cannot be built"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": "automations.schedule",
+            "portal": [
+              "Needs a paid or trial plan. Registers with Neon Deer when the workflow is turned on. Default time zone comes from https://app.neondeerdata.com/settings/general."
+            ]
+          }
+        },
+        "j-scheduled-runs-cancel": {
+          "type": "step",
+          "title": "Cancel scheduled runs",
+          "description": "Cancels one scheduled run, or all pending runs for a record across all workflows. Runs already starting cannot be canceled.",
+          "config": [
+            {
+              "key": "mode",
+              "schema_type": "string",
+              "optional": false,
+              "enum_values": [
+                "run",
+                "record"
+              ],
+              "notes": "plain string in schema (not stringEnum); runtime accepts only \"run\" or \"record\"; UI default run; disableVariables"
+            },
+            {
+              "key": "scheduled_run_id",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "required (UUID) when mode=run"
+            },
+            {
+              "key": "object",
+              "schema_type": "attioObject",
+              "optional": true,
+              "notes": "required when mode=record; must equal record.object"
+            },
+            {
+              "key": "record",
+              "schema_type": "attioRecord",
+              "optional": true,
+              "notes": "required when mode=record"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "completed",
+              "fields": [
+                {
+                  "name": "canceled_count",
+                  "type": "number",
+                  "title": "Canceled count"
+                },
+                {
+                  "name": "already_starting_count",
+                  "type": "number",
+                  "title": "Already starting count"
+                },
+                {
+                  "name": "no_longer_pending_count",
+                  "type": "number",
+                  "title": "No longer pending count"
+                },
+                {
+                  "name": "not_found_count",
+                  "type": "number",
+                  "title": "Not found count"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "j-scheduled-runs-find": {
+          "type": "step",
+          "title": "Find scheduled runs",
+          "description": "Finds the next or all pending runs for a record, across all workflows or one workflow.",
+          "config": [
+            {
+              "key": "object",
+              "schema_type": "attioObject",
+              "optional": false,
+              "notes": "UI disableVariables; must equal record.object"
+            },
+            {
+              "key": "record",
+              "schema_type": "attioRecord",
+              "optional": false
+            },
+            {
+              "key": "workflow_scope",
+              "schema_type": "string",
+              "optional": false,
+              "enum_values": [
+                "all",
+                "specific"
+              ],
+              "notes": "plain string in schema; runtime accepts only all|specific; UI default all"
+            },
+            {
+              "key": "workflow_id",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "bare workflow UUID (unlike j-schedule-record); required when workflow_scope=specific"
+            },
+            {
+              "key": "selection",
+              "schema_type": "string",
+              "optional": false,
+              "enum_values": [
+                "next",
+                "all"
+              ],
+              "notes": "plain string in schema; runtime accepts only next|all; UI default next"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "found",
+              "fields": [
+                {
+                  "name": "found",
+                  "type": "boolean",
+                  "title": "Found"
+                },
+                {
+                  "name": "count",
+                  "type": "number",
+                  "title": "Count"
+                },
+                {
+                  "name": "next_scheduled_run_id",
+                  "type": "string (optional)",
+                  "title": "Next scheduled run ID"
+                },
+                {
+                  "name": "scheduled_run_ids",
+                  "type": "array<string>",
+                  "title": "Scheduled run IDs"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "j-subflow-return": {
+          "type": "step",
+          "title": "Return from a subflow",
+          "description": "Returns a status and the subflow's named outputs to the workflow that called it.",
+          "config": [
+            {
+              "key": "object",
+              "schema_type": "attioObject",
+              "optional": true,
+              "notes": "legacy: in schema, not rendered by configurator, not read by execute"
+            },
+            {
+              "key": "workflow_id",
+              "schema_type": "string",
+              "optional": true,
+              "notes": "legacy: not rendered in UI. If set, parsed as JSON 3-tuple '[\"<workflowId>\",\"<entryPointId>\",\"<64-hex outputSignature>\"]' and used only as fallback when the subflow return context is missing"
+            },
+            {
+              "key": "subflow_id",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "UUID; wire the subflow_id outcome of j-subflow-start"
+            },
+            {
+              "key": "status",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "succeeded",
+                "failed"
+              ],
+              "optional": true,
+              "notes": "UI default succeeded; runtime default succeeded; disableVariables"
+            },
+            {
+              "key": "outputs",
+              "schema_type": "array<struct{name?: string, value?: string}>",
+              "optional": true,
+              "notes": "current format. UI only writes .value per row, so rows map positionally to j-subflow-start output_definitions; rows with name map by fieldKey(name). Max 50 rows, 2000 chars per value"
+            },
+            {
+              "key": "named_outputs",
+              "schema_type": "record<string>",
+              "optional": true,
+              "notes": "legacy back-compat: map of output field key -> value; only used when outputs is undefined (UI only shows it if outputs absent and named_outputs already set)"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "returned",
+              "condition": "schema is {} (no fields); null if output rows' names are invalid",
+              "fields": []
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        },
+        "j-subflow-run": {
+          "type": "step",
+          "title": "Call a subflow",
+          "description": "Runs a workflow that starts with the 'Start a subflow' trigger for a record, passing named inputs, and waits for the values it returns. For example, run the same enrichment steps from several workflows.",
+          "config": [
+            {
+              "key": "object",
+              "schema_type": "attioObject",
+              "optional": false,
+              "notes": "UI disableVariables; must equal record.object"
+            },
+            {
+              "key": "workflow_id",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "NOT a bare ID: JSON-encoded 3-tuple '[\"<workflowId>\",\"<entryPointId>\",\"<sha256 hex of JSON array of output field keys>\"]' (subflowTargetValue). Signature must match target's current output_definitions or step errors"
+            },
+            {
+              "key": "record",
+              "schema_type": "attioRecord",
+              "optional": false
+            },
+            {
+              "key": "named_inputs",
+              "schema_type": "record<string>",
+              "optional": true,
+              "notes": "keys = fieldKey(input name) from the target's input_definitions (lowercase, non-alnum -> _); unknown keys error; max 2000 chars each, 32KB total"
+            },
+            {
+              "key": "wait_for_result",
+              "schema_type": "boolean",
+              "optional": true,
+              "notes": "UI default = !(dont_wait===true); effective wait = wait_for_result ?? (dont_wait !== true); determines which outcome id is declared"
+            },
+            {
+              "key": "dont_wait",
+              "schema_type": "boolean",
+              "optional": true,
+              "notes": "legacy back-compat inverse of wait_for_result; not rendered; only consulted when wait_for_result is undefined"
+            },
+            {
+              "key": "timeout_minutes",
+              "schema_type": "stringEnum",
+              "enum_values": [
+                "1",
+                "3",
+                "5",
+                "10",
+                "15"
+              ],
+              "optional": false,
+              "notes": "string values; UI default \"15\" (set implicitly, input only shown when waiting); converted with Number()"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "returned",
+              "condition": "when waiting (wait_for_result true / default); schema null until a subflow target is selected",
+              "fields": [
+                {
+                  "name": "status",
+                  "type": "string",
+                  "title": "Status",
+                  "notes": "runtime values \"Succeeded\" | \"Failed\" (capitalized, unlike return config enum)"
+                },
+                {
+                  "name": "outputs",
+                  "type": "struct",
+                  "title": "Outputs",
+                  "children": [
+                    {
+                      "name": "<output field key> (one per target output_definitions)",
+                      "type": "string",
+                      "title": "output name"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "started",
+              "condition": "when not waiting (wait_for_result=false or legacy dont_wait=true)",
+              "fields": []
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": "automations.schedule",
+            "portal": [
+              "Needs a paid or trial plan (https://app.neondeerdata.com/settings/billing). The free plan withholds scheduling and subflows.",
+              "Build the TARGET workflow first, starting with the \"Start a subflow\" trigger, and have it turned on in Attio. It only becomes selectable once live."
+            ]
+          }
+        },
+        "j-subflow-start": {
+          "type": "trigger",
+          "title": "Start a subflow",
+          "description": "Starts when another workflow's 'Call a subflow' step sends it a record, with named inputs. End it with 'Return from a subflow' to send results back. For example, one onboarding subflow that several workflows run.",
+          "config": [
+            {
+              "key": "object",
+              "schema_type": "attioObject",
+              "optional": false,
+              "notes": "UI disableVariables"
+            },
+            {
+              "key": "output_definitions",
+              "schema_type": "array<struct{name: string}>",
+              "optional": true,
+              "notes": "max 50, names <=64 chars, must start with a letter, keys (fieldKey(name)) unique; disableVariables"
+            },
+            {
+              "key": "input_definitions",
+              "schema_type": "array<struct{name: string}>",
+              "optional": true,
+              "notes": "same constraints; keys become inputs.<key> outcome fields"
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "started",
+              "condition": "schema null if input or output definitions are invalid",
+              "fields": [
+                {
+                  "name": "record",
+                  "type": "attioRecord",
+                  "title": "Record"
+                },
+                {
+                  "name": "record_id",
+                  "type": "string",
+                  "title": "Record ID"
+                },
+                {
+                  "name": "subflow_id",
+                  "type": "string",
+                  "title": "Subflow ID",
+                  "notes": "run id; wire into j-subflow-return.subflow_id"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "started_by_workflow",
+                  "type": "string",
+                  "title": "Started by workflow",
+                  "notes": "calling workflow title"
+                },
+                {
+                  "name": "calling_run_url",
+                  "type": "string",
+                  "title": "Calling run URL"
+                },
+                {
+                  "name": "inputs",
+                  "type": "struct",
+                  "title": "Inputs",
+                  "children": [
+                    {
+                      "name": "<input field key> (one per input_definitions)",
+                      "type": "string",
+                      "title": "input name"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": "automations.schedule",
+            "portal": [
+              "Needs a paid or trial plan. Registers with Neon Deer when the workflow is turned on."
+            ]
+          }
+        },
+        "k-record-deleted": {
+          "type": "trigger",
+          "title": "Record deleted",
+          "description": "Starts when a record is deleted.",
+          "config": [],
+          "outcomes": [
+            {
+              "id": "deleted",
+              "fields": [
+                {
+                  "name": "record",
+                  "type": "attioRecord",
+                  "title": "Record",
+                  "notes": "object falls back to object_id if slug unresolvable"
+                },
+                {
+                  "name": "record_id",
+                  "type": "string",
+                  "title": "Record ID"
+                },
+                {
+                  "name": "triggered_at",
+                  "type": "timestamp",
+                  "title": "Triggered at"
+                },
+                {
+                  "name": "deleted_by",
+                  "type": "attioActor (optional)",
+                  "title": "Deleted by"
+                }
+              ]
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          }
+        }
+      }
+    },
+    "email-notifications": {
+      "title": "Workspace Email Notifications",
+      "developer": "Neon Deer Data Labs",
+      "source": "Neon Deer Data Labs (block schemas read from the app source)",
+      "has_workflow_blocks": true,
+      "connection": "Sign up (free) at https://app.neondeerdata.com, then in Attio go to Workspace settings > Apps > Email Notifications and connect Neon Deer.",
+      "connection_failure": "Step errors with \"Email notifications isn't connected to this organization.\"",
+      "guidance": [
+        "Setup at https://app.neondeerdata.com/email-notifications/setup needs BOTH connections: \"Workspace access\" (reads the member list) and \"Email alerts\" (the Attio app).",
+        "Email alerts are OFF by default. An org admin must switch them on at https://app.neondeerdata.com/email-notifications?view=settings, or every send is refused (\"Email alerts are turned off for this organization.\").",
+        "The outcome \"queued\" does NOT mean sent. Plan-limit, inactive-recipient and bounce failures show only in the portal Activity view (?view=activity), never in the Attio run.",
+        "Free plan: 20 emails a month. Over the allowance the step still reports \"queued\" and the alert is marked Not sent in the portal.",
+        "No templates, sender choice or domain setup. Sender is fixed; subject prefix, BCC and rate limits live in the portal settings view."
+      ],
+      "global_notes": [
+        "One step block, send-email-notification. No triggers.",
+        "The step completes with outcome 'queued' as soon as Neon Deer has queued the alert. 'queued' does not prove sending or inbox delivery.",
+        "Plan and capability checks happen on the Neon Deer platform, not in the Attio app.",
+        "subject has a UI-only maxLength of 100; via API a longer subject is accepted and shortened with a trailing '…'. No UI defaults are lost when config is written via API.",
+        "Outcome 'queued' has schema {} and runtime data null: the step exposes no output variables.",
+        "If the workspace connection setup is incomplete, the step finishes the connection itself and retries once."
+      ],
+      "disabled_blocks": [],
+      "blocks": {
+        "send-email-notification": {
+          "type": "step",
+          "title": "Send email notification",
+          "description": "Send an alert to an Attio workspace member through Neon Deer.",
+          "config": [
+            {
+              "key": "recipient",
+              "schema_type": "attioActor",
+              "optional": false,
+              "notes": "Configurator restricts to ActorType.WORKSPACE_MEMBER. Runtime rejects any other actorType with non-retryable 'Choose an Attio workspace member as the recipient.' Only actorId is sent (as memberId); the API validates it as a GUID. One recipient per step: no raw email address, list, team or multi-recipient option. The platform resolves the address from Attio's live member list at send time; a member whose accessLevel is not admin/member is 'Not sent: the recipient isn't an active member of this Attio workspace'."
+            },
+            {
+              "key": "subject",
+              "schema_type": "string",
+              "optional": false,
+              "notes": "UI maxLength 100. Help: \"Your Neon Deer organization's subject prefix is added automatically.\" Runtime trims and shortens to 100 with '…'. Platform builds '<prefix> <subject>'; default prefix 'Attio alert: [<Org name>]'. API requires one line (no control chars, so no newlines) and at least 1 char after trim: blank or multi-line subject gets 422 invalid_request."
+            },
+            {
+              "key": "body",
+              "schema_type": "richText",
+              "optional": false,
+              "notes": "UI label 'Message'. RichTextInput with every format disabled (links, lists, quotes, H1-H3, bold, italic, underline, strikethrough); rich text is used only for line breaks. Runtime converts with value.toPlainText(); a legacy plain string (steps saved when body was ConfigSchema.string) is still accepted. Anything else becomes '' and the API refuses it (422). Help: 'Plain text, up to 2,000 characters; anything longer is shortened. Include a record link if helpful.' Shortened at 2000 with '… (message shortened)'."
+            }
+          ],
+          "outcomes": [
+            {
+              "id": "queued",
+              "condition": "Neon Deer accepted the alert (state pending, sending or accepted). Label 'Queued'.",
+              "fields": []
+            }
+          ],
+          "prerequisites": {
+            "connection": true,
+            "plan_feature": null,
+            "portal": []
+          },
+          "mismatches": [
+            "None between source and live surfaces: one step send-email-notification plus workspace settings, as installed.",
+            "Outcome id changed from 'sent' to 'queued' in v1.0. Any workflow built against 'sent' is stale.",
+            "The live install (v1.0) declares the 'queued' outcome and a rich-text body."
+          ]
+        }
+      }
+    },
+    "check-for-duplicates": {
+      "title": "Duplicate Detection & Merging",
+      "developer": "Neon Deer Data Labs",
+      "source": "Neon Deer Data Labs (block schemas read from the app source)",
+      "has_workflow_blocks": false,
+      "connection": "Sign up (free) at https://app.neondeerdata.com, then in Attio go to Workspace settings > Apps > Duplicate Detection & Merging and connect Neon Deer.",
+      "guidance": [
+        "Setup at https://app.neondeerdata.com/duplicates/setup: \"Workspace access\" plus \"Automatic detection\" (the Attio app).",
+        "Rules (match fields, exclusions) at https://app.neondeerdata.com/duplicates/rules; scans at /duplicates/scans and /duplicates/schedules.",
+        "Duplicates are reviewed, sorted and merged at https://app.neondeerdata.com/duplicates/sets. Exclusions at /duplicates/not-duplicates; settings (kept record, merge limits) at /duplicates/settings.",
+        "The platform is the only merge authority. Do not build workflows that auto-merge people or companies; send the human to /duplicates/sets instead.",
+        "A merge (Attio POST /v2/objects/{object}/records/merge) always mints a NEW record id. Workflows, scheduled runs and lookup-table record cells keyed to the old id will point at a dead record.",
+        "Merges run pair by pair in batches, so record created/updated/deleted workflows on people and companies can fire in bursts.",
+        "UNVERIFIED: whether a merge fires record.deleted, i.e. whether AWA \"Record deleted\" (k-record-deleted) workflows run on merged-away records. Test in a sandbox before relying on either behaviour.",
+        "The Attio app provisions two lists, \"Duplicate Companies\" (company_deduplication_history) and \"Duplicate People\" (person_deduplication_history), with attributes duplicate_reason, duplicate_of, input_value, matched_value, details and merged (checkbox), plus a timestamp attribute nddl_last_duplicate_check on people and companies. Slugs may carry a suffix; check the workspace before referencing them (they only exist once the app has run in the workspace).",
+        "Each flagged duplicate becomes a list entry, and merged flips to true when Attio reports record.merged. Workflows can trigger on entries added to those lists or filter on merged; do not build workflows that edit the duplicate_* attributes.",
+        "Apart from nddl_last_duplicate_check, detection writes nothing to people or company records. The Attio app itself never merges.",
+        "Free plan: 5 scans and 200 merge pairs a month; redirect-domain checks and AI confidence are paid only."
+      ]
+    }
+  }
+}

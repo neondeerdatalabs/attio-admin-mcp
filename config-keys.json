@@ -1,0 +1,2645 @@
+{
+  "_note": "Top-level config keys per block, harvested from configs Attio's own UI wrote. Counts and value types only: no workspace slugs and no workflow titles. Modern engine only; legacy blocks arrive via the snapshot path in a different shape.",
+  "_app_note": "Entries with provider \"app\" come from installed integrations and only apply to a workspace that has that app installed. Their config keys are portable; their provider ids are NOT. app_id and app_user_connection_membership_id are deliberately not recorded here - read them from the target workspace's own installation.",
+  "_scanned": {
+    "workflows": 191,
+    "blocks": 939,
+    "app_blocks": 243,
+    "unreadable": 0
+  },
+  "blocks": {
+    "modern:step:app:send-message": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "send-message",
+      "version": null,
+      "provider": "app",
+      "seen": 63,
+      "config_keys": {
+        "hideWatermark": {
+          "count": 63,
+          "value_types": {
+            "boolean": 63
+          }
+        },
+        "channelId": {
+          "count": 62,
+          "value_types": {
+            "string": 62
+          }
+        },
+        "message": {
+          "count": 61,
+          "value_types": {
+            "rich-text": 60,
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:j-subflow-run": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "j-subflow-run",
+      "version": null,
+      "provider": "app",
+      "seen": 9,
+      "config_keys": {
+        "timeout_minutes": {
+          "count": 8,
+          "value_types": {
+            "string": 8
+          }
+        },
+        "wait_for_result": {
+          "count": 7,
+          "value_types": {
+            "boolean": 7
+          }
+        },
+        "object": {
+          "count": 7,
+          "value_types": {
+            "attio-object": 7
+          }
+        },
+        "record": {
+          "count": 7,
+          "value_types": {
+            "variable": 1,
+            "attio-entity-reference": 6
+          }
+        },
+        "workflow_id": {
+          "count": 4,
+          "value_types": {
+            "string": 4
+          }
+        },
+        "named_inputs": {
+          "count": 3,
+          "value_types": {
+            "object": 3
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:j-subflow-return": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "j-subflow-return",
+      "version": null,
+      "provider": "app",
+      "seen": 7,
+      "config_keys": {
+        "status": {
+          "count": 7,
+          "value_types": {
+            "string": 7
+          }
+        },
+        "subflow_id": {
+          "count": 5,
+          "value_types": {
+            "variable": 5
+          }
+        },
+        "outputs": {
+          "count": 2,
+          "value_types": {
+            "array": 2
+          }
+        },
+        "output_1": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "object": {
+          "count": 2,
+          "value_types": {
+            "attio-object": 2
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:j-scheduled-record": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "j-scheduled-record",
+      "version": null,
+      "provider": "app",
+      "seen": 7,
+      "config_keys": {
+        "object": {
+          "count": 7,
+          "value_types": {
+            "attio-object": 7
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:j-subflow-start": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "j-subflow-start",
+      "version": null,
+      "provider": "app",
+      "seen": 8,
+      "config_keys": {
+        "object": {
+          "count": 7,
+          "value_types": {
+            "attio-object": 7
+          }
+        },
+        "input_definitions": {
+          "count": 2,
+          "value_types": {
+            "array": 2
+          }
+        },
+        "output_definitions": {
+          "count": 2,
+          "value_types": {
+            "array": 2
+          }
+        }
+      },
+      "empty_configs": 1
+    },
+    "modern:step:app:send-email-notification": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "send-email-notification",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "recipient": {
+          "count": 1,
+          "value_types": {
+            "attio-actor": 1
+          }
+        },
+        "subject": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "body": {
+          "count": 1,
+          "value_types": {
+            "rich-text": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:on-manual-run@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-manual-run",
+      "version": "v1",
+      "provider": "system",
+      "seen": 17,
+      "config_keys": {},
+      "empty_configs": 17
+    },
+    "modern:step:assert-record@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "assert-record",
+      "version": "v2",
+      "provider": "system",
+      "seen": 3,
+      "config_keys": {
+        "object": {
+          "count": 3,
+          "value_types": {
+            "attio-object": 3
+          }
+        },
+        "configured_attributes": {
+          "count": 3,
+          "value_types": {
+            "object": 3
+          }
+        },
+        "matching_attribute": {
+          "count": 3,
+          "value_types": {
+            "attio-attribute": 3
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:guard@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "guard",
+      "version": "v1",
+      "provider": "system",
+      "seen": 45,
+      "config_keys": {
+        "predicate": {
+          "count": 45,
+          "value_types": {
+            "binary-predicate": 13,
+            "composite-predicate": 23,
+            "unary-predicate": 9
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:on-record-created@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-record-created",
+      "version": "v1",
+      "provider": "system",
+      "seen": 17,
+      "config_keys": {
+        "object": {
+          "count": 15,
+          "value_types": {
+            "attio-object": 15
+          }
+        }
+      },
+      "empty_configs": 2
+    },
+    "modern:step:parse-json@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "parse-json",
+      "version": "v1",
+      "provider": "system",
+      "seen": 4,
+      "config_keys": {
+        "input": {
+          "count": 4,
+          "value_types": {
+            "variable": 3,
+            "json-string": 1
+          }
+        },
+        "schema": {
+          "count": 3,
+          "value_types": {
+            "string": 3
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:update-record@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "update-record",
+      "version": "v2",
+      "provider": "system",
+      "seen": 75,
+      "config_keys": {
+        "object": {
+          "count": 71,
+          "value_types": {
+            "attio-object": 71
+          }
+        },
+        "configured_attributes": {
+          "count": 71,
+          "value_types": {
+            "object": 71
+          }
+        },
+        "record": {
+          "count": 69,
+          "value_types": {
+            "variable": 63,
+            "attio-entity-reference": 6
+          }
+        }
+      },
+      "empty_configs": 4
+    },
+    "modern:trigger:on-record-updated@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-record-updated",
+      "version": "v1",
+      "provider": "system",
+      "seen": 11,
+      "config_keys": {
+        "object": {
+          "count": 10,
+          "value_types": {
+            "attio-object": 10
+          }
+        },
+        "attribute": {
+          "count": 10,
+          "value_types": {
+            "attio-attribute": 10
+          }
+        }
+      },
+      "empty_configs": 1
+    },
+    "modern:step:aggregate-values@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "aggregate-values",
+      "version": "v2",
+      "provider": "system",
+      "seen": 1,
+      "config_keys": {
+        "aggregation_type": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:find-records@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "find-records",
+      "version": "v1",
+      "provider": "system",
+      "seen": 12,
+      "config_keys": {
+        "limit": {
+          "count": 12,
+          "value_types": {
+            "number": 12
+          }
+        },
+        "entity": {
+          "count": 12,
+          "value_types": {
+            "attio-object": 12
+          }
+        },
+        "filter": {
+          "count": 12,
+          "value_types": {
+            "entity-filter": 12
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:on-attribute-invalidated@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-attribute-invalidated",
+      "version": "v1",
+      "provider": "system",
+      "seen": 63,
+      "config_keys": {
+        "object": {
+          "count": 59,
+          "value_types": {
+            "attio-object": 59
+          }
+        },
+        "attribute": {
+          "count": 59,
+          "value_types": {
+            "attio-attribute": 59
+          }
+        }
+      },
+      "empty_configs": 4
+    },
+    "modern:step:switch@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "switch",
+      "version": "v1",
+      "provider": "system",
+      "seen": 14,
+      "config_keys": {
+        "cases": {
+          "count": 14,
+          "value_types": {
+            "array": 14
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:create-list-entry@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "create-list-entry",
+      "version": "v2",
+      "provider": "system",
+      "seen": 10,
+      "config_keys": {
+        "list": {
+          "count": 10,
+          "value_types": {
+            "attio-list": 10
+          }
+        },
+        "configured_attributes": {
+          "count": 10,
+          "value_types": {
+            "object": 10
+          }
+        },
+        "record": {
+          "count": 10,
+          "value_types": {
+            "variable": 9,
+            "attio-entity-reference": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:branch@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "branch",
+      "version": "v1",
+      "provider": "system",
+      "seen": 22,
+      "config_keys": {
+        "predicate": {
+          "count": 20,
+          "value_types": {
+            "composite-predicate": 1,
+            "binary-predicate": 16,
+            "unary-predicate": 3
+          }
+        }
+      },
+      "empty_configs": 2
+    },
+    "legacy:undefined:unknown": {
+      "engine": "legacy",
+      "slug": "unknown",
+      "version": null,
+      "provider": "system",
+      "seen": 220,
+      "config_keys": {},
+      "empty_configs": 220
+    },
+    "modern:step:research-entity@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "research-entity",
+      "version": "v1",
+      "provider": "system",
+      "seen": 4,
+      "config_keys": {
+        "input": {
+          "count": 4,
+          "value_types": {
+            "variable": 4
+          }
+        },
+        "questions": {
+          "count": 4,
+          "value_types": {
+            "array": 4
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:create-task@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "create-task",
+      "version": "v2",
+      "provider": "system",
+      "seen": 15,
+      "config_keys": {
+        "assignees": {
+          "count": 15,
+          "value_types": {
+            "variable": 7,
+            "array": 8
+          }
+        },
+        "content": {
+          "count": 14,
+          "value_types": {
+            "string": 5,
+            "rich-text": 9
+          }
+        },
+        "references": {
+          "count": 15,
+          "value_types": {
+            "variable": 15
+          }
+        },
+        "due_at": {
+          "count": 5,
+          "value_types": {
+            "timestamp": 2,
+            "variable": 3
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:run-custom-ai-agent@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "run-custom-ai-agent",
+      "version": "v2",
+      "provider": "system",
+      "seen": 11,
+      "config_keys": {
+        "instructions": {
+          "count": 6,
+          "value_types": {
+            "rich-text": 3,
+            "string": 3
+          }
+        },
+        "model": {
+          "count": 11,
+          "value_types": {
+            "string": 11
+          }
+        },
+        "output_mode": {
+          "count": 8,
+          "value_types": {
+            "string": 8
+          }
+        },
+        "tools": {
+          "count": 2,
+          "value_types": {
+            "object": 2
+          }
+        },
+        "run_as": {
+          "count": 2,
+          "value_types": {
+            "attio-actor": 2
+          }
+        },
+        "structured_output_schema": {
+          "count": 2,
+          "value_types": {
+            "string": 2
+          }
+        },
+        "messages": {
+          "count": 1,
+          "value_types": {
+            "array": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:on-record-action@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-record-action",
+      "version": "v1",
+      "provider": "system",
+      "seen": 19,
+      "config_keys": {
+        "object": {
+          "count": 13,
+          "value_types": {
+            "attio-object": 13
+          }
+        }
+      },
+      "empty_configs": 6
+    },
+    "modern:step:send-http-request@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "send-http-request",
+      "version": "v1",
+      "provider": "system",
+      "seen": 9,
+      "config_keys": {
+        "method": {
+          "count": 9,
+          "value_types": {
+            "string": 9
+          }
+        },
+        "url": {
+          "count": 9,
+          "value_types": {
+            "string": 9
+          }
+        },
+        "headers": {
+          "count": 9,
+          "value_types": {
+            "array": 9
+          }
+        },
+        "body": {
+          "count": 4,
+          "value_types": {
+            "json-string": 4
+          }
+        },
+        "content_type": {
+          "count": 3,
+          "value_types": {
+            "string": 3
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:for-each@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "for-each",
+      "version": "v1",
+      "provider": "system",
+      "seen": 16,
+      "config_keys": {
+        "iterable": {
+          "count": 15,
+          "value_types": {
+            "variable": 15
+          }
+        },
+        "limit": {
+          "count": 1,
+          "value_types": {
+            "number": 1
+          }
+        }
+      },
+      "empty_configs": 1
+    },
+    "modern:trigger:on-task-created@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-task-created",
+      "version": "v1",
+      "provider": "system",
+      "seen": 4,
+      "config_keys": {},
+      "empty_configs": 4
+    },
+    "modern:step:enroll-in-sequence@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "enroll-in-sequence",
+      "version": "v1",
+      "provider": "system",
+      "seen": 8,
+      "config_keys": {
+        "sequence": {
+          "count": 8,
+          "value_types": {
+            "attio-sequence": 8
+          }
+        },
+        "recipient": {
+          "count": 8,
+          "value_types": {
+            "attio-entity-reference": 3,
+            "variable": 5
+          }
+        },
+        "sender": {
+          "count": 7,
+          "value_types": {
+            "attio-actor": 6,
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:create-note@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "create-note",
+      "version": "v1",
+      "provider": "system",
+      "seen": 6,
+      "config_keys": {
+        "title": {
+          "count": 5,
+          "value_types": {
+            "string": 4,
+            "variable": 1
+          }
+        },
+        "content": {
+          "count": 5,
+          "value_types": {
+            "rich-text": 4,
+            "variable": 1
+          }
+        },
+        "record": {
+          "count": 5,
+          "value_types": {
+            "attio-entity-reference": 2,
+            "variable": 3
+          }
+        }
+      },
+      "empty_configs": 1
+    },
+    "modern:trigger:on-activity-created@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-activity-created",
+      "version": "v1",
+      "provider": "system",
+      "seen": 3,
+      "config_keys": {
+        "activity": {
+          "count": 1,
+          "value_types": {
+            "attio-activity": 1
+          }
+        }
+      },
+      "empty_configs": 2
+    },
+    "modern:step:app:add-member-to-audience": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "add-member-to-audience",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:send-workspace-toast@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "send-workspace-toast",
+      "version": "v1",
+      "provider": "system",
+      "seen": 34,
+      "config_keys": {
+        "variant": {
+          "count": 34,
+          "value_types": {
+            "string": 34
+          }
+        },
+        "target_type": {
+          "count": 34,
+          "value_types": {
+            "string": 34
+          }
+        },
+        "duration_seconds": {
+          "count": 34,
+          "value_types": {
+            "number": 34
+          }
+        },
+        "targeted_users": {
+          "count": 12,
+          "value_types": {
+            "array": 6,
+            "variable": 6
+          }
+        },
+        "title": {
+          "count": 34,
+          "value_types": {
+            "variable": 7,
+            "string": 19,
+            "rich-text": 8
+          }
+        },
+        "description": {
+          "count": 27,
+          "value_types": {
+            "string": 1,
+            "variable": 10,
+            "rich-text": 16
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:c-lookup-row-find": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "c-lookup-row-find",
+      "version": null,
+      "provider": "app",
+      "seen": 8,
+      "config_keys": {
+        "lookup_boolean": {
+          "count": 8,
+          "value_types": {
+            "boolean": 8
+          }
+        },
+        "table_id": {
+          "count": 6,
+          "value_types": {
+            "string": 6
+          }
+        },
+        "lookup_definition_id": {
+          "count": 6,
+          "value_types": {
+            "string": 6
+          }
+        },
+        "lookup_member": {
+          "count": 6,
+          "value_types": {
+            "variable": 4,
+            "attio-actor": 2
+          }
+        },
+        "lookup_text": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "lookup_member_id": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:b-task-find": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "b-task-find",
+      "version": null,
+      "provider": "app",
+      "seen": 4,
+      "config_keys": {
+        "completion_status": {
+          "count": 4,
+          "value_types": {
+            "string": 4
+          }
+        },
+        "deadline_status": {
+          "count": 4,
+          "value_types": {
+            "string": 4
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:i-folder-create": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "i-folder-create",
+      "version": null,
+      "provider": "app",
+      "seen": 5,
+      "config_keys": {
+        "storage_provider": {
+          "count": 5,
+          "value_types": {
+            "string": 5
+          }
+        },
+        "record": {
+          "count": 3,
+          "value_types": {
+            "attio-entity-reference": 2,
+            "variable": 1
+          }
+        },
+        "name": {
+          "count": 3,
+          "value_types": {
+            "string": 2,
+            "rich-text": 1
+          }
+        },
+        "object": {
+          "count": 1,
+          "value_types": {
+            "attio-object": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:d-compare-records": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "d-compare-records",
+      "version": null,
+      "provider": "app",
+      "seen": 6,
+      "config_keys": {
+        "record_object": {
+          "count": 5,
+          "value_types": {
+            "attio-object": 5
+          }
+        },
+        "previous_records": {
+          "count": 4,
+          "value_types": {
+            "variable": 4
+          }
+        },
+        "new_records": {
+          "count": 4,
+          "value_types": {
+            "variable": 4
+          }
+        }
+      },
+      "empty_configs": 1
+    },
+    "modern:trigger:app:k-record-deleted": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "k-record-deleted",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {},
+      "empty_configs": 2
+    },
+    "modern:step:app:d-compare-values": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "d-compare-values",
+      "version": null,
+      "provider": "app",
+      "seen": 5,
+      "config_keys": {
+        "attribute_type": {
+          "count": 3,
+          "value_types": {
+            "string": 3
+          }
+        },
+        "previous_domain_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "new_domain_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "previous_email_values": {
+          "count": 2,
+          "value_types": {
+            "variable": 2
+          }
+        },
+        "new_email_values": {
+          "count": 2,
+          "value_types": {
+            "variable": 2
+          }
+        }
+      },
+      "empty_configs": 2
+    },
+    "modern:step:app:a-note-create": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "a-note-create",
+      "version": null,
+      "provider": "app",
+      "seen": 6,
+      "config_keys": {
+        "format": {
+          "count": 6,
+          "value_types": {
+            "string": 6
+          }
+        },
+        "title": {
+          "count": 3,
+          "value_types": {
+            "rich-text": 2,
+            "string": 1
+          }
+        },
+        "content_rich": {
+          "count": 2,
+          "value_types": {
+            "rich-text": 2
+          }
+        },
+        "parent_record": {
+          "count": 3,
+          "value_types": {
+            "variable": 2,
+            "attio-entity-reference": 1
+          }
+        },
+        "content": {
+          "count": 2,
+          "value_types": {
+            "variable": 2
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:add-email-to-sequence": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "add-email-to-sequence",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:create-activity@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "create-activity",
+      "version": "v1",
+      "provider": "system",
+      "seen": 2,
+      "config_keys": {
+        "activity": {
+          "count": 2,
+          "value_types": {
+            "attio-activity": 2
+          }
+        },
+        "configured_attributes": {
+          "count": 2,
+          "value_types": {
+            "object": 2
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:on-activity-updated@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-activity-updated",
+      "version": "v1",
+      "provider": "system",
+      "seen": 2,
+      "config_keys": {
+        "activity": {
+          "count": 2,
+          "value_types": {
+            "attio-activity": 2
+          }
+        },
+        "attribute": {
+          "count": 1,
+          "value_types": {
+            "attio-attribute": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:e-value-transform": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "e-value-transform",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {
+        "input": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 1
+    },
+    "modern:step:app:j-schedule-record": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "j-schedule-record",
+      "version": null,
+      "provider": "app",
+      "seen": 5,
+      "config_keys": {
+        "object": {
+          "count": 4,
+          "value_types": {
+            "attio-object": 4
+          }
+        },
+        "workflow_id": {
+          "count": 3,
+          "value_types": {
+            "string": 3
+          }
+        },
+        "run_at": {
+          "count": 3,
+          "value_types": {
+            "timestamp": 2,
+            "variable": 1
+          }
+        },
+        "record": {
+          "count": 2,
+          "value_types": {
+            "variable": 1,
+            "attio-entity-reference": 1
+          }
+        }
+      },
+      "empty_configs": 1
+    },
+    "modern:trigger:on-list-entry-action@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-list-entry-action",
+      "version": "v1",
+      "provider": "system",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:find-tasks@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "find-tasks",
+      "version": "v1",
+      "provider": "system",
+      "seen": 1,
+      "config_keys": {
+        "limit": {
+          "count": 1,
+          "value_types": {
+            "number": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:adjust-timestamp@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "adjust-timestamp",
+      "version": "v2",
+      "provider": "system",
+      "seen": 20,
+      "config_keys": {
+        "offset": {
+          "count": 20,
+          "value_types": {
+            "duration": 20
+          }
+        },
+        "timestamp": {
+          "count": 19,
+          "value_types": {
+            "variable": 19
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:on-list-entry-created@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-list-entry-created",
+      "version": "v1",
+      "provider": "system",
+      "seen": 4,
+      "config_keys": {
+        "list": {
+          "count": 4,
+          "value_types": {
+            "attio-list": 4
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:add-to-campaign": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "add-to-campaign",
+      "version": null,
+      "provider": "app",
+      "seen": 9,
+      "config_keys": {
+        "campaignId": {
+          "count": 9,
+          "value_types": {
+            "string": 9
+          }
+        },
+        "email": {
+          "count": 9,
+          "value_types": {
+            "variable": 9
+          }
+        },
+        "firstName": {
+          "count": 9,
+          "value_types": {
+            "variable": 9
+          }
+        },
+        "lastName": {
+          "count": 9,
+          "value_types": {
+            "variable": 9
+          }
+        },
+        "companyName": {
+          "count": 9,
+          "value_types": {
+            "variable": 9
+          }
+        },
+        "contactOwner": {
+          "count": 9,
+          "value_types": {
+            "string": 9
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:update-list-entry@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "update-list-entry",
+      "version": "v2",
+      "provider": "system",
+      "seen": 1,
+      "config_keys": {
+        "list": {
+          "count": 1,
+          "value_types": {
+            "attio-list": 1
+          }
+        },
+        "entry": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "configured_attributes": {
+          "count": 1,
+          "value_types": {
+            "object": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:create-record@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "create-record",
+      "version": "v2",
+      "provider": "system",
+      "seen": 7,
+      "config_keys": {
+        "object": {
+          "count": 5,
+          "value_types": {
+            "attio-object": 5
+          }
+        },
+        "configured_attributes": {
+          "count": 5,
+          "value_types": {
+            "object": 5
+          }
+        }
+      },
+      "empty_configs": 2
+    },
+    "modern:step:round-robin@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "round-robin",
+      "version": "v2",
+      "provider": "system",
+      "seen": 2,
+      "config_keys": {
+        "users": {
+          "count": 2,
+          "value_types": {
+            "array": 2
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:lemlist-activity": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "lemlist-activity",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {
+        "eventType": {
+          "count": 2,
+          "value_types": {
+            "string": 2
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:find-list-entries@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "find-list-entries",
+      "version": "v1",
+      "provider": "system",
+      "seen": 1,
+      "config_keys": {
+        "list": {
+          "count": 1,
+          "value_types": {
+            "attio-list": 1
+          }
+        },
+        "limit": {
+          "count": 1,
+          "value_types": {
+            "number": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:send-actions": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "send-actions",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {
+        "hideWatermark": {
+          "count": 2,
+          "value_types": {
+            "boolean": 2
+          }
+        },
+        "actions": {
+          "count": 2,
+          "value_types": {
+            "array": 2
+          }
+        },
+        "channelId": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "message": {
+          "count": 1,
+          "value_types": {
+            "rich-text": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:j-scheduled-runs-find": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "j-scheduled-runs-find",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {
+        "workflow_scope": {
+          "count": 2,
+          "value_types": {
+            "string": 2
+          }
+        },
+        "selection": {
+          "count": 2,
+          "value_types": {
+            "string": 2
+          }
+        },
+        "object": {
+          "count": 1,
+          "value_types": {
+            "attio-object": 1
+          }
+        },
+        "record": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:j-scheduled-runs-cancel": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "j-scheduled-runs-cancel",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {
+        "mode": {
+          "count": 2,
+          "value_types": {
+            "string": 2
+          }
+        },
+        "scheduled_run_id": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:a-note-move": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "a-note-move",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {
+        "source_note_id": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "target_parent_record": {
+          "count": 1,
+          "value_types": {
+            "attio-entity-reference": 1
+          }
+        }
+      },
+      "empty_configs": 1
+    },
+    "modern:trigger:app:b-task-assignee-changed": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "b-task-assignee-changed",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:a-note-find": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "a-note-find",
+      "version": null,
+      "provider": "app",
+      "seen": 3,
+      "config_keys": {
+        "meeting_status": {
+          "count": 3,
+          "value_types": {
+            "string": 3
+          }
+        },
+        "parent_record": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "created_before": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:c-member-find": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "c-member-find",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {
+        "email": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "case_sensitive": {
+          "count": 1,
+          "value_types": {
+            "boolean": 1
+          }
+        },
+        "normalize_email": {
+          "count": 1,
+          "value_types": {
+            "boolean": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:resolve-domain": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "resolve-domain",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {
+        "match_against_attio_company_domains": {
+          "count": 2,
+          "value_types": {
+            "boolean": 2
+          }
+        },
+        "url_or_domain": {
+          "count": 2,
+          "value_types": {
+            "variable": 2
+          }
+        },
+        "ignored_domains": {
+          "count": 1,
+          "value_types": {
+            "array": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:resolve-email-domain": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "resolve-email-domain",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "email": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:on-inbound-webhook@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-inbound-webhook",
+      "version": "v1",
+      "provider": "system",
+      "seen": 4,
+      "config_keys": {},
+      "empty_configs": 4
+    },
+    "modern:step:app:f-meeting-probe": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "f-meeting-probe",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "meeting_id": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "emit_meeting": {
+          "count": 1,
+          "value_types": {
+            "boolean": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:h-html-to-markdown": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "h-html-to-markdown",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "html": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:resolve-email-address": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "resolve-email-address",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "email": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:b-task-status-changed": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "b-task-status-changed",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:e-value-check-primary": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "e-value-check-primary",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {
+        "attribute_type": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "previous_email_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "new_email_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 1
+    },
+    "modern:step:app:b-task-get": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "b-task-get",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "task_id": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:complete-task@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "complete-task",
+      "version": "v1",
+      "provider": "system",
+      "seen": 1,
+      "config_keys": {
+        "task": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:b-task-created": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "b-task-created",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:trigger:app:b-task-deadline-changed": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "b-task-deadline-changed",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:h-classify-email-domain": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "h-classify-email-domain",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "email": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:b-task-update": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "b-task-update",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "completion_change": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "deadline_change": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "assignee_change": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "linked_record_change": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "task_id": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:find-added-and-removed-records": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "find-added-and-removed-records",
+      "version": null,
+      "provider": "app",
+      "seen": 3,
+      "config_keys": {
+        "record_object": {
+          "count": 3,
+          "value_types": {
+            "attio-object": 3
+          }
+        },
+        "previous_records": {
+          "count": 3,
+          "value_types": {
+            "variable": 3
+          }
+        },
+        "new_records": {
+          "count": 3,
+          "value_types": {
+            "variable": 3
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:primary-value-changed": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "primary-value-changed",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "attribute_type": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "previous_email_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "new_email_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:get-call-transcript": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "get-call-transcript",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "meeting_id": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "call_recording_id": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:find-added-and-removed-values": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "find-added-and-removed-values",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "attribute_type": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "previous_email_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "new_email_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:call-recording-created": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "call-recording-created",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:find-workspace-member-by-email": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "find-workspace-member-by-email",
+      "version": null,
+      "provider": "app",
+      "seen": 4,
+      "config_keys": {
+        "email": {
+          "count": 4,
+          "value_types": {
+            "string": 3,
+            "variable": 1
+          }
+        },
+        "case_sensitive": {
+          "count": 1,
+          "value_types": {
+            "boolean": 1
+          }
+        },
+        "normalize_email": {
+          "count": 1,
+          "value_types": {
+            "boolean": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:get-meeting": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "get-meeting",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "meeting_id": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:find-workspace-member-by-id": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "find-workspace-member-by-id",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {
+        "workspace_member_id": {
+          "count": 2,
+          "value_types": {
+            "variable": 2
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:probe-attio-record": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "probe-attio-record",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "object_slug": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "record_id_1": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "record_id_2": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:note-title-updated": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "note-title-updated",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:trigger:app:note-deleted": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "note-deleted",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:trigger:app:note-created": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "note-created",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:trigger:app:note-content-updated": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "note-content-updated",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:get-note": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "get-note",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "note_id": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:transfer-note": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "transfer-note",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "source_note_id": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "target_parent_object": {
+          "count": 1,
+          "value_types": {
+            "attio-object": 1
+          }
+        },
+        "target_parent_record": {
+          "count": 1,
+          "value_types": {
+            "attio-entity-reference": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:task-created": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "task-created",
+      "version": null,
+      "provider": "app",
+      "seen": 5,
+      "config_keys": {},
+      "empty_configs": 5
+    },
+    "modern:trigger:app:task-status-changed": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "task-status-changed",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {},
+      "empty_configs": 2
+    },
+    "modern:step:app:find-added-and-removed": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "find-added-and-removed",
+      "version": null,
+      "provider": "app",
+      "seen": 4,
+      "config_keys": {
+        "attribute_type": {
+          "count": 4,
+          "value_types": {
+            "string": 4
+          }
+        },
+        "new_domain_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "previous_domain_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "new_actor_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "previous_actor_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "new_phone_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "previous_phone_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "new_email_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "previous_email_values": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:convert-value": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "convert-value",
+      "version": null,
+      "provider": "app",
+      "seen": 4,
+      "config_keys": {
+        "default_value": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "input": {
+          "count": 4,
+          "value_types": {
+            "variable": 4
+          }
+        },
+        "on_invalid": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "target_type": {
+          "count": 4,
+          "value_types": {
+            "string": 4
+          }
+        },
+        "trim_whitespace": {
+          "count": 1,
+          "value_types": {
+            "boolean": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:task-completion-changed": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "task-completion-changed",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {},
+      "empty_configs": 2
+    },
+    "modern:step:app:throw-error": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "throw-error",
+      "version": null,
+      "provider": "app",
+      "seen": 3,
+      "config_keys": {
+        "message": {
+          "count": 3,
+          "value_types": {
+            "string": 3
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:workspace-member-created": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "workspace-member-created",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {},
+      "empty_configs": 2
+    },
+    "modern:trigger:app:task-assignee-changed": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "task-assignee-changed",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {},
+      "empty_configs": 2
+    },
+    "modern:step:app:update-issue": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "update-issue",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "issueId": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:task-deadline-changed": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "task-deadline-changed",
+      "version": null,
+      "provider": "app",
+      "seen": 3,
+      "config_keys": {},
+      "empty_configs": 3
+    },
+    "modern:trigger:app:task-deleted": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "task-deleted",
+      "version": null,
+      "provider": "app",
+      "seen": 2,
+      "config_keys": {},
+      "empty_configs": 2
+    },
+    "modern:step:delay@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "delay",
+      "version": "v1",
+      "provider": "system",
+      "seen": 1,
+      "config_keys": {
+        "duration": {
+          "count": 1,
+          "value_types": {
+            "duration": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:formula@v2": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "formula",
+      "version": "v2",
+      "provider": "system",
+      "seen": 1,
+      "config_keys": {
+        "formula": {
+          "count": 1,
+          "value_types": {
+            "rich-text": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:execute-code@v1": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "execute-code",
+      "version": "v1",
+      "provider": "system",
+      "seen": 4,
+      "config_keys": {
+        "code": {
+          "count": 4,
+          "value_types": {
+            "string": 4
+          }
+        },
+        "inputs": {
+          "count": 4,
+          "value_types": {
+            "array": 4
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:enrich-person": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "enrich-person",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "identifyBy": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:create-note": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "create-note",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "parent_object": {
+          "count": 1,
+          "value_types": {
+            "attio-object": 1
+          }
+        },
+        "parent_record": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "format": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "title": {
+          "count": 1,
+          "value_types": {
+            "string": 1
+          }
+        },
+        "content": {
+          "count": 1,
+          "value_types": {
+            "rich-text": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:step:app:e-value-get-primary": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "e-value-get-primary",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:d-compare-members": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "d-compare-members",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:e-value-transform-html-to-markdown": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "e-value-transform-html-to-markdown",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:f-call-recording-transcript-get": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "f-call-recording-transcript-get",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:g-thread-get": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "g-thread-get",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:g-comment-get": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "g-comment-get",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:f-meeting-get": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "f-meeting-get",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:a-note-get": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "a-note-get",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "note_id": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:app:a-note-deleted": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "a-note-deleted",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:c-member-metadata-get": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "c-member-metadata-get",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "member": {
+          "count": 1,
+          "value_types": {
+            "attio-actor": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    },
+    "modern:trigger:on-call-recording-created@v1": {
+      "engine": "modern",
+      "block_type": "trigger",
+      "slug": "on-call-recording-created",
+      "version": "v1",
+      "provider": "system",
+      "seen": 1,
+      "config_keys": {},
+      "empty_configs": 1
+    },
+    "modern:step:app:send-sendblue-message": {
+      "engine": "modern",
+      "block_type": "step",
+      "slug": "send-sendblue-message",
+      "version": null,
+      "provider": "app",
+      "seen": 1,
+      "config_keys": {
+        "recipient": {
+          "count": 1,
+          "value_types": {
+            "variable": 1
+          }
+        },
+        "message": {
+          "count": 1,
+          "value_types": {
+            "rich-text": 1
+          }
+        },
+        "sender": {
+          "count": 1,
+          "value_types": {
+            "attio-actor": 1
+          }
+        }
+      },
+      "empty_configs": 0
+    }
+  }
+}

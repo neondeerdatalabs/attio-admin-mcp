@@ -1,0 +1,510 @@
+{
+  "aggregate-values@v2": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "total": {
+        "observed": 1,
+        "traversable_to_attributes": false,
+        "type": "union"
+      }
+    }
+  },
+  "on-record-updated@v1": {
+    "block_type": "trigger",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "entity_instance": {
+        "observed": 11,
+        "traversable_to_attributes": true,
+        "example_paths": [
+          "entity_instance.{attribute:147ad762-b958-4a8a-880c-09c5b233023b}",
+          "entity_instance.{attribute:8418586a-7478-4cdf-ba89-58dc4bfe13e4}"
+        ],
+        "type": "attio-entity-reference"
+      },
+      "new_value": {
+        "observed": 10,
+        "traversable_to_attributes": false,
+        "example_paths": [
+          "new_value.option_title"
+        ]
+      }
+    }
+  },
+  "find-records@v1": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "records": {
+        "observed": 16,
+        "traversable_to_attributes": true,
+        "example_paths": [
+          "records.{attribute:84ebf7eb-85ba-478d-8945-2488afae8294}",
+          "records.{attribute:bd8a44d6-694c-4e08-94fc-c4aee5924c7a}.{attribute:4f1ab05f-182b-47bc-8c67-62595c8f4343}"
+        ]
+      },
+      "match_count": {
+        "observed": 1,
+        "traversable_to_attributes": false
+      }
+    }
+  },
+  "on-attribute-invalidated@v1": {
+    "block_type": "trigger",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "new_value": {
+        "observed": 10,
+        "traversable_to_attributes": false
+      },
+      "entity_instance": {
+        "observed": 74,
+        "traversable_to_attributes": true,
+        "example_paths": [
+          "entity_instance.{attribute:357f285a-14bd-4924-ab6d-65fd4fa1d918}",
+          "entity_instance.{attribute:0bc6443c-a821-43f0-9676-3dbd29b12617}.text"
+        ]
+      },
+      "previous_value": {
+        "observed": 3,
+        "traversable_to_attributes": false,
+        "example_paths": [
+          "previous_value.option_title"
+        ]
+      }
+    }
+  },
+  "research-entity@v1": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "answer_q1": {
+        "observed": 2,
+        "traversable_to_attributes": false
+      },
+      "answer_q2": {
+        "observed": 2,
+        "traversable_to_attributes": false
+      },
+      "answer_q3": {
+        "observed": 2,
+        "traversable_to_attributes": false
+      },
+      "answer_q4": {
+        "observed": 2,
+        "traversable_to_attributes": false
+      }
+    }
+  },
+  "run-custom-ai-agent@v2": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "response": {
+        "observed": 1,
+        "traversable_to_attributes": false
+      }
+    }
+  },
+  "for-each@v1": {
+    "block_type": "step",
+    "outcomes": [
+      "next"
+    ],
+    "fields": {
+      "item": {
+        "observed": 11,
+        "traversable_to_attributes": true,
+        "example_paths": [
+          "item.normalized_email_address",
+          "item.{attribute:03f6113f-0d67-4187-9db3-0eb9eb8fc9ec}.{attribute:2c6f9ac8-cc60-41e9-8fed-302e5c873e6b}"
+        ]
+      }
+    }
+  },
+  "update-record@v2": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "record": {
+        "observed": 1,
+        "traversable_to_attributes": true,
+        "example_paths": [
+          "record.{attribute:97f9b593-a046-409f-8f57-e2c9e2f7e0ba}"
+        ]
+      }
+    }
+  },
+  "on-task-created@v1": {
+    "block_type": "trigger",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "at": {
+        "observed": 1,
+        "traversable_to_attributes": false
+      }
+    }
+  },
+  "assert-record@v2": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "record": {
+        "observed": 2,
+        "traversable_to_attributes": true,
+        "example_paths": [
+          "record.{attribute:4be1d7e7-57fc-4845-a9e9-e400188934f3}.normalized_email_address",
+          "record.{attribute:a0852e4f-c6f7-4fce-a5ce-4b53afb1df94}"
+        ]
+      }
+    }
+  },
+  "app": {
+    "block_type": "trigger",
+    "outcomes": [
+      "triggered"
+    ],
+    "fields": {
+      "lead_email": {
+        "observed": 3,
+        "traversable_to_attributes": false,
+        "example_paths": [
+          "lead_email.normalized_email_address",
+          "lead_email.email_domain"
+        ],
+        "type": "email-address"
+      },
+      "lead_first_name": {
+        "observed": 3,
+        "traversable_to_attributes": false
+      },
+      "lead_last_name": {
+        "observed": 1,
+        "traversable_to_attributes": false
+      },
+      "campaign_name": {
+        "observed": 1,
+        "traversable_to_attributes": false
+      }
+    }
+  },
+  "execute-code@v1": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "return": {
+        "observed": 4,
+        "traversable_to_attributes": false,
+        "type": "array"
+      }
+    }
+  },
+  "send-http-request@v1": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "response_body": {
+        "observed": 2,
+        "traversable_to_attributes": false,
+        "type": "string"
+      }
+    }
+  },
+  "on-record-created@v1": {
+    "block_type": "trigger",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "entity_instance": {
+        "observed": 13,
+        "traversable_to_attributes": true,
+        "example_paths": [
+          "entity_instance.{attribute:a8a74875-b4dc-4ef4-94e0-37014bc6a3a4}.stage_title",
+          "entity_instance.{attribute:e4ee2a46-f074-4cec-8fc7-1b3255d06129}"
+        ]
+      }
+    }
+  },
+  "find-list-entries@v1": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "entries": {
+        "observed": 2,
+        "traversable_to_attributes": false
+      },
+      "match_count": {
+        "observed": 1,
+        "traversable_to_attributes": false
+      }
+    }
+  },
+  "round-robin@v2": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "selected_user": {
+        "observed": 6,
+        "traversable_to_attributes": false,
+        "type": "attio-actor"
+      }
+    }
+  },
+  "create-task@v2": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "created_task": {
+        "observed": 2,
+        "traversable_to_attributes": false,
+        "example_paths": [
+          "created_task.record_details_url"
+        ]
+      }
+    }
+  },
+  "create-record@v2": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "record": {
+        "observed": 5,
+        "traversable_to_attributes": true,
+        "example_paths": [
+          "record.{attribute:9a57a385-0305-4cd3-b77e-229237680f21}.full_name",
+          "record.{attribute:a4cbe28b-d360-4f30-bb7c-2db43716d442}"
+        ],
+        "type": "attio-entity-reference"
+      }
+    }
+  },
+  "parse-json@v1": {
+    "block_type": "step",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "parsed": {
+        "observed": 7,
+        "traversable_to_attributes": false,
+        "example_paths": [
+          "parsed.payload.attendees.email",
+          "parsed.payload.attendees.name"
+        ]
+      }
+    }
+  },
+  "on-inbound-webhook@v1": {
+    "block_type": "trigger",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "request_body": {
+        "observed": 1,
+        "traversable_to_attributes": false,
+        "type": "json-string"
+      }
+    }
+  },
+  "on-list-entry-created@v1": {
+    "block_type": "trigger",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "entity_instance": {
+        "observed": 1,
+        "traversable_to_attributes": true,
+        "example_paths": [
+          "entity_instance.{attribute:0953a891-ad9e-4bc1-b7a3-6680a5d1db5d}"
+        ]
+      }
+    }
+  },
+  "on-list-entry-updated@v1": {
+    "block_type": "trigger",
+    "outcomes": [
+      "done"
+    ],
+    "fields": {
+      "entity_instance": {
+        "observed": 3,
+        "traversable_to_attributes": true,
+        "example_paths": [
+          "entity_instance.{attribute:1049171d-291c-4323-91ee-a8c7ff864421}.{attribute:2d3a2546-ae88-4dba-9c02-3616a4c5e663}",
+          "entity_instance.{attribute:1049171d-291c-4323-91ee-a8c7ff864421}.{attribute:2d3a2546-ae88-4dba-9c02-3616a4c5e663}.{attribute:7d042323-6034-4127-bc93-01278b86f736}.normalized_email_address"
+        ]
+      }
+    }
+  },
+  "update-task": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": 1,
+      "labels": [
+        "Task"
+      ],
+      "note": "Task traverses to 8 task attributes",
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "summarize-entity": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": 1,
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "generate-random-number": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": 1,
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "formula": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": 1,
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "find-tasks": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": 2,
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "create-note": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": 1,
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "adjust-timestamp": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": 1,
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "create-list-entry": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": null,
+      "note": "expandable, count not shown",
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "update-list-entry": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": null,
+      "note": "expandable, count not shown",
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "classify-text": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": null,
+      "note": "expandable, count not shown",
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "classify-entity": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": null,
+      "note": "expandable, count not shown",
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "send-workspace-celebration": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": null,
+      "correction": "Originally recorded as zero. That was WRONG: the picker only lists fields compatible with the target input, so \"no data\" means none matched that field type, not that the block has no outputs. enroll-in-sequence in fact outputs enrolled_successfully (see legacy-block-schemas.json).",
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "send-workspace-toast": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": null,
+      "correction": "Originally recorded as zero. That was WRONG: the picker only lists fields compatible with the target input, so \"no data\" means none matched that field type, not that the block has no outputs. enroll-in-sequence in fact outputs enrolled_successfully (see legacy-block-schemas.json).",
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  },
+  "enroll-in-sequence": {
+    "block_type": "step",
+    "fields": {},
+    "picker": {
+      "field_count": null,
+      "correction": "Originally recorded as zero. That was WRONG: the picker only lists fields compatible with the target input, so \"no data\" means none matched that field type, not that the block has no outputs. enroll-in-sequence in fact outputs enrolled_successfully (see legacy-block-schemas.json).",
+      "caveat": "Counts are filtered by the target input type; they are not a total."
+    },
+    "note": "Field COUNT observed in the UI picker; config keys not yet captured."
+  }
+}
