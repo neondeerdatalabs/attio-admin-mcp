@@ -353,6 +353,68 @@ function findAppBlock(appBlockId, appSlug) {
   return null;
 }
 
+// -------------------------------------------------------- workflow context
+//
+// Block references, recipes and guides from Erik Wood's attio toolkit, built by
+// tools/build-workflow-context.js. Each claim carries an evidence level
+// (effect-verified > runtime-verified > config-verified > ui-observed >
+// documented). Served by workflow_guide and folded into the block tools.
+
+const WF_CONTEXT = (() => {
+  try { return require('./workflow-context.json'); } catch { return { capabilities: {}, block_index: { system: {}, app: {} }, recipes: {}, guides: {} }; }
+})();
+
+const EVIDENCE_RANK = ['effect-verified', 'runtime-verified', 'config-verified', 'ui-observed', 'documented', 'unresolved'];
+
+/** Strongest evidence level across a capability's claims. */
+function bestEvidence(cap) {
+  const levels = (cap.claims || []).map((c) => c.evidence_level);
+  return EVIDENCE_RANK.find((l) => levels.includes(l)) || null;
+}
+
+/** Capability for a system block slug ("find-records", "find-records@v1", "step-find-records"). */
+function capForSystemBlock(slug) {
+  const bare = String(slug || '').split('@')[0].replace(/^(trigger|step)-/, '');
+  const id = WF_CONTEXT.block_index.system[bare];
+  return id ? WF_CONTEXT.capabilities[id] : null;
+}
+
+/** Capability for an app block id (optionally pinned to an app slug). */
+function capForAppBlock(appBlockId, appSlug) {
+  const idx = WF_CONTEXT.block_index.app;
+  const key = appSlug ? `${appSlug}/${appBlockId}` : Object.keys(idx).find((k) => k.split('/')[1] === appBlockId);
+  return key && idx[key] ? WF_CONTEXT.capabilities[idx[key]] : null;
+}
+
+/** Compact reference block for tool responses. */
+function capReference(cap, { examples = false } = {}) {
+  if (!cap) return null;
+  return {
+    capability: cap.id,
+    evidence: bestEvidence(cap),
+    claims: cap.claims.map((c) => ({ statement: c.statement, evidence_level: c.evidence_level, scope: c.scope, limitations: c.limitations })),
+    gaps: cap.gaps,
+    known_gaps: cap.known_gaps || null,
+    reference_inputs: cap.inputs,
+    reference_outputs: cap.outputs,
+    ...(examples ? { examples: cap.examples } : {}),
+  };
+}
+
+const WORKFLOW_RULES = [
+  'Run preflight first on any workspace you have not built in; configs use ids, never names.',
+  'Before configuring a block, call workflow_guide with that block to read its evidence level, known gaps and an example config.',
+  'Check workflow_guide recipes before inventing a multi-block pattern; follow their mcp_steps.',
+  'Wire a variable only from an output the source block really emits (list_block_outputs, list_available_variables). Formula emits done.result, Aggregate done.total, Adjust time done.adjusted_timestamp.',
+  'Outcomes are per block: most steps use "done", Loop items use "next", Branch uses true/false, Switch uses case_<id>/default.',
+  'Aggregate values: aggregation_type is sum, mean, min or max. "average" saves but fails at runtime.',
+  'A config reading complete is not proof required fields are set (Slack saved complete with no channel). Read the graph back with get_workflow.',
+  'Prefer a Neon Deer app block (list_app_blocks) over custom Code or a large Switch for lookups, subflows, scheduling and set comparisons; relay its portal prerequisites.',
+  'Never pass secrets through Code inputs: evaluated inputs are logged in run history.',
+  'This MCP builds drafts only. Publishing, activation, run logs and retries happen in the Attio UI.',
+  'Say how well tested a pattern is (its evidence level) when you propose it; documented or ui-observed means untested.',
+];
+
 /** The string held by a constant config node, or undefined (variables, absent). */
 function constString(node) {
   if (!node || typeof node !== 'object') return undefined;
@@ -1415,6 +1477,8 @@ const TOOLS = {
       for (const b of out) {
         const k = Object.keys(BLOCK_OUTPUTS).find((x) => x.split('@')[0] === b.block_slug);
         b.outputs_known = !!k;
+        const cap = capForSystemBlock(b.block_slug);
+        b.reference = cap ? { capability: cap.id, evidence: bestEvidence(cap), gaps: cap.gaps.length } : null;
       }
       return {
         workspace: ctx.slug,
@@ -1524,6 +1588,7 @@ const TOOLS = {
         app_guidance: app.guidance,
         app_notes: app.global_notes,
         ...(TARGET_FORMATS[args.app_block_id] ? { workflow_id_format: TARGET_FORMATS[args.app_block_id].hint } : {}),
+        reference: capReference(capForAppBlock(args.app_block_id, slug)),
       };
     },
   },
@@ -1660,11 +1725,22 @@ const TOOLS = {
         : Object.keys(BLOCK_OUTPUTS).find((k) => k.split('@')[0] === want.split('@')[0]);
       const app = !key && !legacy ? findAppBlock(bare) : null;
       if (app) {
+        const ref = capForAppBlock(bare, app.slug);
         return {
           block: bare,
           app: app.slug,
           source: `app source (${app.app.source}), not harvested`,
           outcomes: app.block.outcomes,
+          ...(ref ? { reference_outputs: ref.outputs, reference_evidence: bestEvidence(ref) } : {}),
+        };
+      }
+      const refCap = capForSystemBlock(bare);
+      if (!key && !legacy && refCap) {
+        return {
+          block: bare,
+          source: 'reference catalog only (never harvested from a live workflow)',
+          reference_outputs: refCap.outputs,
+          reference_evidence: bestEvidence(refCap),
         };
       }
       if (!key && !legacy) {
@@ -1680,6 +1756,10 @@ const TOOLS = {
           source: 'server-provided, from a legacy workflow snapshot',
           warning: LEGACY_SCHEMAS._warning,
         };
+      }
+      if (refCap) {
+        res.reference_outputs = refCap.outputs;
+        res.reference_evidence = bestEvidence(refCap);
       }
       return res;
     },
@@ -3139,6 +3219,89 @@ const TOOLS = {
   },
 };
 
+// Reports and dashboards live in their own module (ported from Erik Wood's
+// build_dashboard.py). They reuse this file's HTTP layer and context handling.
+// ------------------------------------------------------------ workflow_guide
+
+TOOLS.workflow_guide = {
+  description:
+    'Context for BUILDING Attio workflows: tested block references, multi-block recipes, guides and build ' +
+    'rules, from Erik Wood\'s toolkit. Each block reference lists its inputs, outputs, an example config, ' +
+    'known gaps and an evidence level (effect-verified > runtime-verified > config-verified > ui-observed > ' +
+    'documented). Call with no arguments for the rules and an index; with block for one block ("find-records", ' +
+    '"c-lookup-row-find"); with recipe for a pattern and the MCP tools that build it; with query to search; ' +
+    'with guide for a long-form guide. Offline: no workspace call.',
+  inputSchema: {
+    type: 'object',
+    properties: {
+      block: { type: 'string', description: 'System block slug (e.g. "aggregate-values"), app block id (e.g. "j-subflow-run"), or capability id.' },
+      recipe: { type: 'string', description: 'Recipe id, e.g. "find-aggregate-update".' },
+      query: { type: 'string', description: 'Keywords to search capabilities and recipes, e.g. "loop records".' },
+      guide: { type: 'string', enum: Object.keys(WF_CONTEXT.guides), description: 'Long-form guide to return in full.' },
+    },
+  },
+  async run(args = {}) {
+    const caps = WF_CONTEXT.capabilities;
+    if (args.block) {
+      const cap = caps[args.block] || capForSystemBlock(args.block) || capForAppBlock(args.block);
+      if (!cap) {
+        throw new Error(`No reference for "${args.block}". Try workflow_guide with query, or list_blocks / list_app_blocks. ` +
+          'No reference means untested here, not invalid.');
+      }
+      const recipesUsing = Object.values(WF_CONTEXT.recipes).filter((r) => r.capabilities.includes(cap.id)).map((r) => r.id);
+      return { title: cap.title, summary: cap.summary, providers: cap.providers, ...capReference(cap, { examples: true }),
+        constraints: cap.constraints, recipes: recipesUsing };
+    }
+    if (args.recipe) {
+      const r = WF_CONTEXT.recipes[args.recipe];
+      if (!r) throw new Error(`Unknown recipe "${args.recipe}". Known: ${Object.keys(WF_CONTEXT.recipes).join(', ')}`);
+      return { ...r, blocks: r.capabilities.map((id) => caps[id] ? { capability: id, title: caps[id].title, evidence: bestEvidence(caps[id]) } : { capability: id }) };
+    }
+    if (args.guide) {
+      const g = WF_CONTEXT.guides[args.guide];
+      if (!g) throw new Error(`Unknown guide "${args.guide}". Known: ${Object.keys(WF_CONTEXT.guides).join(', ')}`);
+      return { guide: args.guide, text: g };
+    }
+    if (args.query) {
+      // Crude stem (records -> record) so plural queries match singular keywords.
+      const terms = [...new Set(String(args.query).toLowerCase().split(/\s+/).filter(Boolean).map((t) => (t.length > 3 ? t.replace(/s$/, '') : t)))];
+      const capList = Object.values(caps);
+      const headOf = (c) => [c.id, c.title, c.summary, ...(c.keywords || [])].join(' ').toLowerCase();
+      // Rare terms weigh more (idf), so "loop records" ranks Loop above every record block.
+      const idf = Object.fromEntries(terms.map((t) => {
+        const df = capList.filter((c) => headOf(c).includes(t)).length;
+        return [t, Math.log((capList.length + 1) / (df + 1)) + 0.1];
+      }));
+      const score = (hay) => terms.reduce((n, t) => n + (hay.includes(t) ? idf[t] : 0), 0);
+      const capHits = capList.map((c) => ({
+        c, s: score(headOf(c)) * 2 + score(c.title.toLowerCase()) * 2 +
+              score(JSON.stringify(c.inputs).toLowerCase() + JSON.stringify(c.outputs).toLowerCase()),
+      })).filter((x) => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 10);
+      const recHits = Object.values(WF_CONTEXT.recipes).map((r) => ({ r, s: score((r.id + ' ' + r.title + ' ' + r.body).toLowerCase()) }))
+        .filter((x) => x.s > 0).sort((a, b) => b.s - a.s).slice(0, 3);
+      return {
+        query: args.query,
+        capabilities: capHits.map(({ c }) => ({ capability: c.id, title: c.title, summary: c.summary, evidence: bestEvidence(c), gaps: c.gaps })),
+        recipes: recHits.map(({ r }) => ({ recipe: r.id, title: r.title, evidence_level: r.evidence_level })),
+        next: 'Call workflow_guide with block or recipe for the full reference.',
+      };
+    }
+    const group = (re) => Object.values(caps).filter((c) => re.test(c.id)).map((c) => ({ capability: c.id, title: c.title, evidence: bestEvidence(c) }));
+    return {
+      source: WF_CONTEXT._source || 'workflow-context.json missing; run tools/build-workflow-context.js',
+      rules: WORKFLOW_RULES,
+      evidence_levels: WF_CONTEXT._evidence_levels,
+      recipes: Object.values(WF_CONTEXT.recipes).map((r) => ({ recipe: r.id, title: r.title, evidence_level: r.evidence_level })),
+      guides: Object.keys(WF_CONTEXT.guides),
+      system_blocks: group(/^workflow\.block\./),
+      neon_deer_app_blocks: group(/^workflow\.app\./),
+      other: group(/^(workflow\.(builder|lifecycle|logs|triggers|production-review)|variables\.|filters\.)/),
+    };
+  },
+};
+
+Object.assign(TOOLS, require('./reports').makeReportTools({ api, raw, unwrap, ctxFrom, scoped, apiKeyFor, ROOT }));
+
 // --------------------------------------------------------------- mcp plumbing
 
 const send = (msg) => process.stdout.write(JSON.stringify(msg) + '\n');
@@ -3150,7 +3313,8 @@ async function handle(req) {
     return {
       protocolVersion: params?.protocolVersion || '2024-11-05',
       capabilities: { tools: {} },
-      serverInfo: { name: 'attio-admin-mcp', version: '4.5.0' },
+      serverInfo: { name: 'attio-admin-mcp', version: '4.7.0' },
+      instructions: 'Attio admin tools (internal API). For workflow builds, follow these rules:\n- ' + WORKFLOW_RULES.join('\n- '),
     };
   }
   if (method === 'tools/list') {

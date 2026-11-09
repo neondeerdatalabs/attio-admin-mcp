@@ -403,7 +403,7 @@ Attio uses fractional-index strings (`wpit6`, `h1gzf`, `kkk`). Any lexically-ord
 3. `entity-view-sorts` write shape. `GET` is verified; the `PUT` body has not been captured.
 4. Kanban card aggregations (sum/avg on currency or number). Only `count_not_empty` has been captured; set one in the UI and read it back before exposing it.
 5. Layout element **reordering and retitling** — possible today only through `set_layout` by hand. `custom-form` (Quick Add) layouts are readable but untested for writes.
-6. `relationship-tab` creation. The shape is documented from capture but has not been exercised here.
+6. ~~`relationship-tab` creation~~ **Exercised 2026-11-06 on a client workspace via set_layout**: tab `{type:"relationship-tab", parent_element_id:<tabs group>, title, slug, path:[{entity_definition_id:<this object>, attribute_definition_id:<relationship attr>}]}`; columns are children `{type:"relationship-tab-value", path:[{entity_definition_id:<target object>, attribute_definition_id:<target attr>}], field:null}`. Not yet wrapped in edit_layout.
 7. Whether the `404` once seen on list view creation (§5) can be reproduced at all. Not a standing limit; cause unknown.
 
 Closed since the last revision: list view creation (§5, works), the full colour palette (§6, twelve names, enumerated), and whether status attributes share the `select-options` route (§6, they do not — `pipeline-stages`).

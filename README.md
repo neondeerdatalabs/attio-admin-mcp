@@ -129,6 +129,7 @@ Every tool takes optional **`workspace_slug`** (defaults to `ATTIO_WORKSPACE_SLU
 | `list_objects` | Workspace objects with their UUIDs (configs reference objects by UUID, never slug) |
 | `list_blocks` | The workspace's live catalog of **system** blocks, correct on a brand-new account. App blocks are not in it |
 | `list_app_blocks` | Blocks from **installed apps** (Slack, lemlist, Neon Deer apps, …) with the live `app_id`, a ready `provider`, and portal prerequisites for mapped apps |
+| `workflow_guide` | Context for building workflows: tested block references (inputs, outputs, example config, known gaps, evidence level), 5 recipes with the MCP tools that build them, guides and build rules. Search with `query`. Offline |
 | `describe_app_block` | Full schema of a mapped app block: config keys, allowed values, outcomes, portal prerequisites, gotchas. Offline |
 | `app_workflow_target` | Builds the encoded `workflow_id` that "Schedule a workflow run" and "Call a subflow" expect, from the target workflow |
 | `list_attributes` | An object's attributes with their UUIDs. Needed for variable paths that read a record field |
@@ -150,6 +151,10 @@ Every tool takes optional **`workspace_slug`** (defaults to `ATTIO_WORKSPACE_SLU
 | `add_view_column` | Append a column; multi-hop paths read through a linked record |
 | `set_view_filters` | Replace a view's filters (full replace; empty array clears). Kinds: actor, select, status (stage "is any of"), generic |
 | `set_kanban_columns` | Choose which stage columns a kanban board shows (board settings toggle, not a filter) |
+| `list_dashboards` | The workspace's report dashboards |
+| `get_dashboard` | One dashboard's cells in order, with each report's type, source, grouping and filter |
+| `preview_report` | **Read-only.** Compile a report from a spec, run Attio's own preview, and recount it independently through the public API. Needs a public API key for the workspace |
+| `create_dashboard` | Build dashboards of reports from a spec. **Dry run by default**; `live: true` saves only reports whose preview matched the recount, then reads every write back. Create-only, ledgered, resumable |
 | `delete_view` | Delete a view and confirm it is gone |
 | `list_lists` | Every list in the workspace — **no API key needed**. Lists are absent from `list_objects` |
 | `create_list` | Create a list. The one tool here that needs an **API key**: there is no internal create route |
@@ -191,6 +196,8 @@ These cost the most time during reverse-engineering. Full detail in the referenc
 - **The colour palette is twelve names**, the same twelve for both namespaces: red, orange, yellow, green, light-green, teal, blue, purple, violet, brown, magenta, grey. Pass a bare name and the right prefix is applied.
 - **Adding an option is a two-API operation**, and `add_select_options` does both halves for you: it creates on the public API (which silently ignores any `color` you send; Attio assigns a random colour instead), then sets the colour on the internal one. It needs an API key for that reason; recolouring what already exists does not.
 - **Kanban views group by a STATUS attribute, on every object.** `create_view` with `type: "kanban"` works on deals, people, companies, custom objects and lists. Deal stage is itself a status attribute, so deals default to `stage` and accept any other status attribute; everywhere else `group_by` is required, and an object with no status attribute is refused until one exists. Attio itself accepts a board grouped by a select attribute (HTTP 200), so the status-only rule is enforced by the tool. Card aggregations (count/sum) are not set: `PUT` drops them and only a count shape has been captured.
+- **Workflow builds have a reference library.** `workflow_guide` serves Erik Wood's block references and recipes, each tagged with how well it was tested (`effect-verified` down to `documented`). `list_blocks`, `describe_app_block` and `list_block_outputs` now include that reference too, and the server sends its build rules to the client on connect. Rebuild the data with `node tools/build-workflow-context.js <toolkit>/attio`. See [docs/workflow-context.md](docs/workflow-context.md).
+- **Reports are spec-driven and checked twice.** `preview_report` / `create_dashboard` take a JSON spec (see [docs/reports.md](docs/reports.md)). Every report is previewed with Attio's read-only dataset call AND recounted from raw records through the public API; `create_dashboard` saves only what matched. It never edits or deletes, and writes only to IDs it minted. Report tools need a **public API key** for the target workspace as well as the cookie: save it to `~/.attio-apikey-<workspace_slug>`. Ported from Erik Wood's `build_dashboard.py`.
 - **Limiting a board to some stages is a column toggle, not a filter.** A Deal stage filter hides cards but every stage column still renders. Use `set_kanban_columns` (or `visible_stages` on `create_view`), which writes the board's per-stage `kanban-stage-characteristic` records.
 
 ---
@@ -241,6 +248,8 @@ Connect the blocks first. A block with nothing upstream can reference nothing.
 
 ```bash
 node test-protocol.js                                   # MCP handshake only, no credentials needed
+node test-reports.js                                    # report builder, offline, no credentials
+node test-workflow-context.js                           # workflow_guide + block references, offline
 ATTIO_WORKSPACE_SLUG=your-workspace node test-full.js   # full suite against a real workspace
 ```
 
@@ -250,7 +259,7 @@ ATTIO_WORKSPACE_SLUG=your-workspace node test-full.js   # full suite against a r
 CLONE_SOURCE_WORKFLOW_ID=<uuid> ATTIO_WORKSPACE_SLUG=your-workspace node test-full.js
 ```
 
-142 checks. It creates only workflows and views prefixed `ZZ-SELFTEST-`, never publishes, and verifies at the end that it left none behind.
+146 checks. It creates only workflows and views prefixed `ZZ-SELFTEST-`, never publishes, and verifies at the end that it left none behind.
 
 ### App-block corpus (Neon Deer apps)
 

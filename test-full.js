@@ -488,6 +488,30 @@ const skipped = (label, why) => { skip++; console.log(`  SKIP  ${label} — ${wh
       await expectRefusal('group_by on a table view is refused',
         { object: objSlug, group_by: 'stage' }, /kanban views only/);
     }
+    console.log('\n=== 8b3. Reports (read-only) ===');
+    // Dashboards cannot be deleted through this server yet, so the suite never creates
+    // one. It previews reports, which is read-only, and checks preview against recount.
+    {
+      const dl = await call('list_dashboards');
+      check('list_dashboards reads', typeof dl.count === 'number', `${dl.count} dashboards`);
+      if (dl.dashboards[0]) {
+        const gd = await call('get_dashboard', { dashboard_id: dl.dashboards[0].dashboard_id });
+        check('get_dashboard reads cells', Array.isArray(gd.cells), `${gd.cells.length} cells`);
+      }
+      let pr = null;
+      try {
+        pr = await call('preview_report', { report: { title: 'selftest', source: { object: objSlug }, group: { attr: 'created_at' }, resolution: 'quarter' } });
+      } catch (e) {
+        if (/public API key/.test(e.message)) skipped('preview_report', 'no public API key for this workspace');
+        else throw e;
+      }
+      if (pr) check('preview_report: Attio preview matches public-API recount', pr.check && pr.check.match === true,
+        `${pr.check && pr.check.dataset_total} records, ${pr.check && pr.check.groups} groups`);
+      if (pr) {
+        const bad = await call('preview_report', { report: { title: 'x', source: { object: objSlug }, filters: [{ attr: 'created_at', op: 'after_relative', value: '-P1Y0M0DT0H0M0S' }] } });
+        check('UI-unsupported relative date refused at compile', /not a UI-supported encoding/.test(bad.compile_error || ''), (bad.compile_error || '').slice(0, 80));
+      }
+    }
     console.log('\n=== 8c. Select options ===');
     // There is nothing disposable to test against here — a select attribute is
     // real workspace config. So: capture, change ONE colour, restore, verify.
