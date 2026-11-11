@@ -3301,6 +3301,7 @@ TOOLS.workflow_guide = {
 };
 
 Object.assign(TOOLS, require('./reports').makeReportTools({ api, raw, unwrap, ctxFrom, scoped, apiKeyFor, ROOT }));
+Object.assign(TOOLS, require('./formulas').makeFormulaTools({ api, raw, unwrap, ctxFrom, scoped, ROOT }));
 
 // --------------------------------------------------------------- mcp plumbing
 
@@ -3313,7 +3314,7 @@ async function handle(req) {
     return {
       protocolVersion: params?.protocolVersion || '2024-11-05',
       capabilities: { tools: {} },
-      serverInfo: { name: 'attio-admin-mcp', version: '4.7.0' },
+      serverInfo: { name: 'attio-admin-mcp', version: '4.8.0' },
       instructions: 'Attio admin tools (internal API). For workflow builds, follow these rules:\n- ' + WORKFLOW_RULES.join('\n- '),
     };
   }

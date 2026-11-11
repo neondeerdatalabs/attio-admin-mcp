@@ -1,0 +1,93 @@
+{
+  "_note": "Shapes harvested from saved formula attributes. No slugs, titles or ids.",
+  "formulas": 12,
+  "output_types": {
+    "number": 3,
+    "date": 5,
+    "checkbox": 1,
+    "currency": 1,
+    "text": 2
+  },
+  "output_type_overrides": {
+    "null": 11,
+    "currency": 1
+  },
+  "output_configs": {
+    "number": {
+      "number_configuration": {
+        "default_decimal_places": null,
+        "default_groups": "default"
+      }
+    },
+    "date": {},
+    "checkbox": {},
+    "currency": {
+      "currency_configuration": {
+        "default_currency_code": "USD",
+        "default_display_type": "code",
+        "default_decimal_places": "two-decimals",
+        "default_groups": "default"
+      }
+    },
+    "text": {}
+  },
+  "field_by_referenced_type": {
+    "pipeline": {
+      "pipeline_stage_id": 5
+    },
+    "date": {
+      "null": 3,
+      "value": 1
+    },
+    "timestamp": {
+      "null": 5
+    },
+    "select": {
+      "select_option_id": 1
+    },
+    "select (via path)": {
+      "select_option_id": 4
+    },
+    "currency": {
+      "raw_value": 1
+    },
+    "text (via path)": {
+      "value": 1
+    }
+  },
+  "annotation_types": {
+    "entity-variable": {
+      "type": "entity-variable",
+      "start_position": 15,
+      "length": 1,
+      "path": [
+        {
+          "entity_definition_id": "<id>",
+          "attribute_definition_id": "<id>"
+        }
+      ],
+      "field": "pipeline_stage_id",
+      "fallback_value": null
+    },
+    "select-option": {
+      "type": "select-option",
+      "start_position": 114,
+      "length": 1,
+      "entity_definition_id": "<id>",
+      "attribute_definition_id": "<id>",
+      "select_option_id": "<id>"
+    },
+    "pipeline-stage": {
+      "type": "pipeline-stage",
+      "start_position": 18,
+      "length": 1,
+      "entity_definition_id": "<id>",
+      "attribute_definition_id": "<id>",
+      "pipeline_stage_id": "<id>"
+    }
+  },
+  "bare_words": {
+    "_": 27,
+    "false": 5
+  }
+}

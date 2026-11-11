@@ -129,6 +129,8 @@ Every tool takes optional **`workspace_slug`** (defaults to `ATTIO_WORKSPACE_SLU
 | `list_objects` | Workspace objects with their UUIDs (configs reference objects by UUID, never slug) |
 | `list_blocks` | The workspace's live catalog of **system** blocks, correct on a brand-new account. App blocks are not in it |
 | `list_app_blocks` | Blocks from **installed apps** (Slack, lemlist, Neon Deer apps, …) with the live `app_id`, a ready `provider`, and portal prerequisites for mapped apps |
+| `get_formula` / `create_formula_attribute` / `update_formula` | Formula attributes, which the public API can't touch. Readable syntax (`{Deal value}`, `{Associated company > Name}`, `{Deal stage: Won}`), read back after every save, and a check of computed values on sample records. See [docs/formulas.md](docs/formulas.md) |
+| `generate_formula` | Ask Attio's own formula AI to write or fix a formula from a prompt. Writes nothing |
 | `workflow_guide` | Context for building workflows: tested block references (inputs, outputs, example config, known gaps, evidence level), 5 recipes with the MCP tools that build them, guides and build rules. Search with `query`. Offline |
 | `describe_app_block` | Full schema of a mapped app block: config keys, allowed values, outcomes, portal prerequisites, gotchas. Offline |
 | `app_workflow_target` | Builds the encoded `workflow_id` that "Schedule a workflow run" and "Call a subflow" expect, from the target workflow |
@@ -250,6 +252,7 @@ Connect the blocks first. A block with nothing upstream can reference nothing.
 node test-protocol.js                                   # MCP handshake only, no credentials needed
 node test-reports.js                                    # report builder, offline, no credentials
 node test-workflow-context.js                           # workflow_guide + block references, offline
+node test-formulas.js                                   # formula syntax compile/render, offline
 ATTIO_WORKSPACE_SLUG=your-workspace node test-full.js   # full suite against a real workspace
 ```
 
