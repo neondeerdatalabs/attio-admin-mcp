@@ -131,6 +131,9 @@ Every tool takes optional **`workspace_slug`** (defaults to `ATTIO_WORKSPACE_SLU
 | `list_app_blocks` | Blocks from **installed apps** (Slack, lemlist, Neon Deer apps, …) with the live `app_id`, a ready `provider`, and portal prerequisites for mapped apps |
 | `get_formula` / `create_formula_attribute` / `update_formula` | Formula attributes, which the public API can't touch. Readable syntax (`{Deal value}`, `{Associated company > Name}`, `{Deal stage: Won}`), read back after every save, and a check of computed values on sample records. See [docs/formulas.md](docs/formulas.md) |
 | `generate_formula` | Ask Attio's own formula AI to write or fix a formula from a prompt. Writes nothing |
+| `list_workflow_runs` | A published workflow's runs, newest first, with status filter, 7-day stats and total count. Read-only |
+| `get_workflow_run` | One run step by step: each block's status, error, attempts, credits; `include_outputs` adds output values. Inputs are not exposed by Attio |
+| `retry_workflow_run` | Retry a failed block, like the UI Retry button. Previews unless `confirm: true`; re-runs for real |
 | `workflow_guide` | Context for building workflows: tested block references (inputs, outputs, example config, known gaps, evidence level), 5 recipes with the MCP tools that build them, guides and build rules. Search with `query`. Offline |
 | `describe_app_block` | Full schema of a mapped app block: config keys, allowed values, outcomes, portal prerequisites, gotchas. Offline |
 | `app_workflow_target` | Builds the encoded `workflow_id` that "Schedule a workflow run" and "Call a subflow" expect, from the target workflow |
@@ -253,6 +256,7 @@ node test-protocol.js                                   # MCP handshake only, no
 node test-reports.js                                    # report builder, offline, no credentials
 node test-workflow-context.js                           # workflow_guide + block references, offline
 node test-formulas.js                                   # formula syntax compile/render, offline
+node test-runs.js                                       # run history paging, outputs, retry, offline
 ATTIO_WORKSPACE_SLUG=your-workspace node test-full.js   # full suite against a real workspace
 ```
 

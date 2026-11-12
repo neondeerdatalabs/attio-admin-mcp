@@ -411,7 +411,7 @@ const WORKFLOW_RULES = [
   'A config reading complete is not proof required fields are set (Slack saved complete with no channel). Read the graph back with get_workflow.',
   'Prefer a Neon Deer app block (list_app_blocks) over custom Code or a large Switch for lookups, subflows, scheduling and set comparisons; relay its portal prerequisites.',
   'Never pass secrets through Code inputs: evaluated inputs are logged in run history.',
-  'This MCP builds drafts only. Publishing, activation, run logs and retries happen in the Attio UI.',
+  'This MCP builds drafts only. Publishing and activation happen in the Attio UI. Run history is readable (list_workflow_runs, get_workflow_run); retry_workflow_run re-runs blocks for real, so confirm with the human first.',
   'Say how well tested a pattern is (its evidence level) when you propose it; documented or ui-observed means untested.',
 ];
 
@@ -3302,6 +3302,7 @@ TOOLS.workflow_guide = {
 
 Object.assign(TOOLS, require('./reports').makeReportTools({ api, raw, unwrap, ctxFrom, scoped, apiKeyFor, ROOT }));
 Object.assign(TOOLS, require('./formulas').makeFormulaTools({ api, raw, unwrap, ctxFrom, scoped, ROOT }));
+Object.assign(TOOLS, require('./runs').makeRunTools({ api, unwrap, ctxFrom, scoped }));
 
 // --------------------------------------------------------------- mcp plumbing
 
@@ -3314,7 +3315,7 @@ async function handle(req) {
     return {
       protocolVersion: params?.protocolVersion || '2024-11-05',
       capabilities: { tools: {} },
-      serverInfo: { name: 'attio-admin-mcp', version: '4.8.0' },
+      serverInfo: { name: 'attio-admin-mcp', version: '4.9.0' },
       instructions: 'Attio admin tools (internal API). For workflow builds, follow these rules:\n- ' + WORKFLOW_RULES.join('\n- '),
     };
   }

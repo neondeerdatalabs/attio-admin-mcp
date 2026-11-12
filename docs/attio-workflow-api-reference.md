@@ -268,8 +268,9 @@ All non-GET requests require `Origin: https://app.attio.com`.
 | Update | `PUT /workflows/{id}` | Same verb on an existing id. **[VERIFIED]** |
 | Delete | `DELETE /workflows/{id}` | `204`. Cascades to versions, blocks, paths. **[VERIFIED]** |
 | List | `POST /workflows/batch-query-mrl` | See below. **[VERIFIED]** |
-| Run counts | `POST /workflows/batch-run-counts` | Body `{"workflow_ids":[...]}`. **[OBSERVED]** |
-| Latest run | `GET /workflows/{id}/runs/latest` | **[OBSERVED]** |
+| Run counts | `POST /workflows/batch-run-counts` | Body `{"workflow_ids":[...]}`. **[VERIFIED 2026-11-12]** |
+| Latest run | `GET /workflows/{id}/runs/latest` | Returns the newest run's `sort_key`. **[VERIFIED 2026-11-12]** |
+| Run history | `POST /workflows/{id}/runs/query`, then `.../versions/{ver}/runs/{run}/frames/{frame}/block-executions` | Modern engine. Cursor-paged, per-block status/errors/outputs, retry. See `docs/captures/workflow-runs-2026-11-12.md`; tools `list_workflow_runs`, `get_workflow_run`, `retry_workflow_run`. **[VERIFIED 2026-11-12]** |
 | List versions | `GET /workflows/{id}/versions` | **[OBSERVED]** |
 
 > **`is_modern: true` is load-bearing on create.** Without it the workflow is created with `draft_workflow_version_id: null` and no draft version is provisioned, leaving you unable to add anything. With it, the server auto-creates the draft and returns its id. **[VERIFIED, both branches tested]**
