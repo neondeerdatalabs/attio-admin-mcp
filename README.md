@@ -18,6 +18,104 @@ Reverse-engineered and verified against live workspaces, Aug 2026.
 
 ---
 
+## Quick start (no coding experience needed)
+
+This walks you through connecting the tools to Claude on your own computer in about 15 minutes. You'll copy and paste a few things; you don't need to write any code.
+
+**Where it works:** the **Claude desktop app** (Mac or Windows) and **Claude Code**. It does **not** work on claude.ai in a web browser or on the phone app, because it runs on your computer and reads your Attio login from there.
+
+### Step 1. Install Node.js
+
+Node.js is the free program that runs these tools.
+
+1. Go to [nodejs.org](https://nodejs.org) and download the **LTS** version.
+2. Run the installer and accept the defaults.
+3. Check it worked: open **Terminal** (Mac: press Cmd+Space, type Terminal) or **PowerShell** (Windows: Start menu, type PowerShell), then type `node --version` and press Enter. You should see something like `v22.x.x`.
+
+### Step 2. Download this project
+
+1. At the top of this GitHub page, click the green **Code** button, then **Download ZIP**.
+2. Unzip it and move the folder somewhere permanent, such as your Documents folder. Don't leave it in Downloads, where it might get cleaned up.
+3. Note the folder's full location. You'll need the path to the `server.js` file inside it, for example:
+   - Mac: `/Users/yourname/Documents/attio-admin-mcp/server.js`
+   - Windows: `C:\Users\yourname\Documents\attio-admin-mcp\server.js`
+
+   Tip: on a Mac, drag `server.js` into a Terminal window and the full path appears. On Windows, hold Shift, right-click `server.js` and choose **Copy as path**.
+
+### Step 3. Copy your Attio login (session cookie)
+
+Attio API keys don't work for these tools. They use the same login your browser uses. This is personal to you, so treat it like a password and never share it.
+
+1. In **Google Chrome**, log in to Attio and open any workflow.
+2. Open the developer tools: Mac **Cmd+Option+I**, Windows **Ctrl+Shift+I**.
+3. Click the **Network** tab. Make sure the filter box is empty, then click **Fetch/XHR**.
+4. Click around in Attio (open another workflow) so items appear in the list.
+5. Click any item whose name starts with something like `workflows` or `objects`. On the right, under **Headers**, scroll to **Request Headers** and find the line starting with **cookie:**.
+6. Right-click the value next to **cookie:**, choose **Copy value**.
+
+Now save it to a file. With the cookie still copied, paste **one** of these into Terminal / PowerShell and press Enter:
+
+- **Mac:**
+  ```bash
+  pbpaste > ~/.attio-session && chmod 600 ~/.attio-session
+  ```
+- **Windows (PowerShell):**
+  ```powershell
+  Get-Clipboard | Set-Content "$HOME\.attio-session"
+  ```
+
+This creates a hidden file called `.attio-session` in your home folder. **It expires every 30 days.** When the tools start saying your session expired, repeat this step.
+
+### Step 4. Find your workspace slug
+
+Look at your Attio address bar: `app.attio.com/`**`your-workspace`**`/...`. The bold part is your workspace slug.
+
+### Step 5. Connect it to Claude
+
+**Claude desktop app:**
+
+1. Open the Claude app, then **Settings → Developer → Edit Config**. This opens a file called `claude_desktop_config.json`.
+2. Replace its contents with the block below (if the file already has other servers in `mcpServers`, add the `attio-admin` entry alongside them instead):
+
+   ```json
+   {
+     "mcpServers": {
+       "attio-admin": {
+         "command": "node",
+         "args": ["/Users/yourname/Documents/attio-admin-mcp/server.js"],
+         "env": { "ATTIO_WORKSPACE_SLUG": "your-workspace" }
+       }
+     }
+   }
+   ```
+
+3. Change the path to your `server.js` from Step 2, and `your-workspace` to your slug from Step 4.
+   - **Windows:** write the path with double backslashes, e.g. `"C:\\Users\\yourname\\Documents\\attio-admin-mcp\\server.js"`.
+4. Save the file, then **fully quit** Claude (Mac: Cmd+Q; Windows: right-click the tray icon, Quit) and open it again.
+
+**Claude Code:** run this once, with your own path and slug, then start a new Claude Code session:
+
+```bash
+claude mcp add attio-admin -s user -e ATTIO_WORKSPACE_SLUG=your-workspace -- node /full/path/to/attio-admin-mcp/server.js
+```
+
+### Step 6. Try it
+
+Start a new chat and ask: **"Check my Attio session."** Claude should report your login is valid and how many days are left. Then try **"List my Attio workflows."**
+
+### If something goes wrong
+
+| What you see | Fix |
+|---|---|
+| The tools don't appear in Claude | Fully quit and reopen Claude. Check the path to `server.js` is correct and the config file is valid JSON (every `"` and `,` in place). |
+| "node" not found, or the server fails to start (Mac) | Run `which node` in Terminal and put that full path (e.g. `/usr/local/bin/node`) in place of `"node"` in the config. |
+| Session expired / 401 errors | Your cookie is older than 30 days, or you logged out of Attio. Redo Step 3. |
+| Workspace not reachable | The slug is wrong, or your login doesn't belong to that workspace. The error lists the workspaces your login can reach. |
+
+Everything below is the detailed reference.
+
+---
+
 ## What it does and doesn't do
 
 **Does:** create, read, update, clone and delete workflows; add/configure/connect/delete blocks; wire one step's output into the next step's input; deactivate a live workflow. Also drives the rest of Attio's internal surface, almost none of which the public API exposes: **lists** (create, discover, delete), **views** (create, multi-hop columns, filters, delete — on objects *and* lists), **select and status option colours and order**, and **record-page layouts** (sections, fields, removal).
